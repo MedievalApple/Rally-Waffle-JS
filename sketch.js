@@ -1,55 +1,76 @@
 var player;
 var blocks = [];
 var gridSize;
+var corners = [];
 //W = wall
 //S = Start
 //G = Grass
+var carImage;
 var map = [];
+var map2 = [];
 function setup() {
     createCanvas(800, 800);
-    gridSize = width/8;
+    gridSize = width / 8;
     player = new Car();
     map = [
-        ["W", "W", "W", "W", "W", "W", "W", "W"],
-        ["S",  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ],
-        [ 0 , "W", "W",  0 , "W", "W", "W",  0 ],
-        [ 0 , "W", "W",  0 , "W", "W", "W",  0 ],
-        [ 0 , "W", "W",  0 ,  0 ,   0,  0 ,  0 ],
-        [ 0 , "W", "W",  0 , "G", "G", "G",  0 ],
-        [ 0 ,  0 ,  0 ,  0 , "G", "W", "G",  0 ],
-        ["W", "W",  0 , "W", "G", "G", "G",  0 ]
+        ["W", "G", "G", "W", "W", "G", "G", "W"],
+        ["S", " ", " ", " ", " ", " ", " ", "G"],
+        [" ", "W", "W", " ", "W", "W", " ", " "],
+        [" ", "W", "W", " ", "W", "W", "W", " "],
+        [" ", "W", "W", " ", " ", " ", " ", " "],
+        [" ", "W", " ", " ", "G", "G", "G", " "],
+        [" ", " ", " ", "G", "G", "W", "G", " "],
+        ["W", "W", " ", "W", "G", "G", "G", " "]
     ];
+
+    map2 = [
+        ["W", " ", " ", " ", " ", " ", "W", "W"],
+        [" ", " ", "G", "W", "G", " ", " ", " "],
+        [" ", "G", "G", " ", "W", "W", "W", " "],
+        [" ", "W", "W", " ", "W", "W", "W", " "],
+        [" ", "W", "W", " ", " ", " ", " ", " "],
+        [" ", " ", "W", "G", " ", "W", "W", " "],
+        ["G", " ", " ", " ", " ", "W", "W", " "],
+        ["W", "W", "W", "G", " ", " ", " ", "S"]
+    ];
+    carImage = loadImage("./assets/player.png")
 }
 
 function draw() {
     background(0);
-    showMap(map);
+    showMap(map2);
     player.move();
     player.show();
 }
 function showMap(theMap) {
-    for(let i = 0; i < theMap.length; i++) {
-        for(let j = 0; j < theMap[0].length; j++) {
-            if(map[i][j]) {
-                if(map[i][j]=="W") {
+    for (let i = 0; i < theMap.length; i++) {
+        for (let j = 0; j < theMap[0].length; j++) {
+            if (theMap[i][j]) {
+                if (theMap[i][j] == "W") {
                     fill(151);
                     noStroke();
-                    rect(j*gridSize, i*gridSize, gridSize, gridSize);
-                }else if(map[i][j]=="G") {
+                    rect(j * gridSize, i * gridSize, gridSize, gridSize);
+                } else if (theMap[i][j] == "G") {
                     fill(0, 177, 0);
                     noStroke();
-                    rect(j*gridSize, i*gridSize, gridSize, gridSize);
+                    rect(j * gridSize, i * gridSize, gridSize, gridSize);
                 }
             }
         }
+    }
+    for (let i = 0; i < 8; i++) {
+        stroke(51);
+        strokeWeight(3);
+        line(i * gridSize, 0, i * gridSize, height);
+        line(0, i * gridSize, width, i * gridSize);
     }
 }
 class Car {
     constructor() {
         this.pos = createVector(width / 2, height / 2);
         this.carAngle = 0;
-        this.w = 30;
-        this.h = 60;
+        this.w = 32 * 2;
+        this.h = 32 * 2;
         this.vel = createVector(0, 0);
     }
     show() {
@@ -58,8 +79,11 @@ class Car {
         rotate(this.carAngle);
         noStroke();
         fill(255);
-        rect(-this.w / 2, -this.h / 2, this.w, this.h);
+        image(carImage, -this.w / 2, -this.h / 2, this.w, this.h);
         pop();
+        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
+        stroke(255, 0, 0);
+        point(corners[0].x+this.pos.x, corners[0].y+this.pos.y)
     }
     move() {
         if (keyIsDown(87)) { // w key
