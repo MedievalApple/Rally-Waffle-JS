@@ -38,7 +38,7 @@ function setup() {
 
 function draw() {
     background(0);
-    showMap(map2);
+    showMap(map);
     player.move();
     player.show();
 }
@@ -67,7 +67,7 @@ function showMap(theMap) {
 }
 class Car {
     constructor() {
-        this.pos = createVector(width / 2, height / 2);
+        this.pos = createVector(width / 2 - gridSize / 2, height / 2 - gridSize / 2);
         this.carAngle = 0;
         this.w = 32 * 2;
         this.h = 32 * 2;
@@ -81,9 +81,25 @@ class Car {
         fill(255);
         image(carImage, -this.w / 2, -this.h / 2, this.w, this.h);
         pop();
-        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
         stroke(255, 0, 0);
-        point(corners[0].x+this.pos.x, corners[0].y+this.pos.y)
+        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[0].add(this.pos);
+
+        corners[1] = createVector(this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[1].add(this.pos);
+
+        corners[2] = createVector(-this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[2].add(this.pos);
+
+        corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[3].add(this.pos);
+
+        strokeWeight(4);
+        stroke(255, 0, 0);
+        point(corners[0].x, corners[0].y);
+        point(corners[1].x, corners[1].y)
+        point(corners[2].x, corners[2].y)
+        point(corners[3].x, corners[3].y)
     }
     move() {
         if (keyIsDown(87)) { // w key
@@ -96,10 +112,49 @@ class Car {
         }
         if (keyIsDown(65)) { // a key
             this.carAngle -= PI / 120;
+            if (this.collide()) {
+                this.carAngle += PI / 120;
+            }
         }
         if (keyIsDown(68)) { // d key
             this.carAngle += PI / 120;
+            if (this.collide()) {
+                this.carAngle -= PI / 120;
+            }
         }
         this.pos.add(this.vel.rotate(this.carAngle));
+        if (this.collide()) {
+            console.log("Collide");
+            this.pos.sub(this.vel);
+        }
+    }
+    collide() {
+        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[0].add(this.pos);
+        corners[0].mult(1 / gridSize);
+
+        corners[1] = createVector(this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[1].add(this.pos);
+        corners[1].mult(1 / gridSize);
+
+        corners[2] = createVector(-this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[2].add(this.pos);
+        corners[2].mult(1 / gridSize);
+
+        corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[3].add(this.pos);
+        corners[3].mult(1 / gridSize);
+        if (map[floor(corners[0].y)][floor(corners[0].x)] == "W" ||
+            map[floor(corners[1].y)][floor(corners[1].x)] == "W" ||
+            map[floor(corners[2].y)][floor(corners[2].x)] == "W" ||
+            map[floor(corners[3].y)][floor(corners[3].x)] == "W") {
+            return true;
+        }
+        return false;
+    }
+}
+function UWUmode(uwu) {
+    if (uwu=="uwu"||uwu=="UWU") {
+        carImage = loadImage("./assets/player_UWU.png");
     }
 }
