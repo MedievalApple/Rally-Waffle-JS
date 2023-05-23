@@ -37,7 +37,7 @@ function setup() {
 }
 
 function draw() {
-    background(0);
+    background(255);
     showMap(map);
     player.move();
     player.show();
@@ -69,8 +69,8 @@ class Car {
     constructor() {
         this.pos = createVector(width / 2 - gridSize / 2, height / 2 - gridSize / 2);
         this.carAngle = 0;
-        this.w = 32 * 2;
-        this.h = 32 * 2;
+        this.w = 32 * 2 - 10;
+        this.h = 32 * 2 - 4;
         this.vel = createVector(0, 0);
     }
     show() {
@@ -79,7 +79,7 @@ class Car {
         rotate(this.carAngle);
         noStroke();
         fill(255);
-        image(carImage, -this.w / 2, -this.h / 2, this.w, this.h);
+        image(carImage, -this.w / 2-4, -this.h / 2, 64, 64);
         pop();
         stroke(255, 0, 0);
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
@@ -144,8 +144,11 @@ class Car {
         corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
         corners[3].add(this.pos);
         corners[3].mult(1 / gridSize);
-        if (map[floor(corners[0].y)][floor(corners[0].x)] == "W" ||
-            map[floor(corners[1].y)][floor(corners[1].x)] == "W" ||
+        if (map[floor(corners[0].y)][floor(corners[0].x)] == "W") {
+            console.log(this.carAngle*260/2*PI);
+            return true;
+        }
+        if (map[floor(corners[1].y)][floor(corners[1].x)] == "W" ||
             map[floor(corners[2].y)][floor(corners[2].x)] == "W" ||
             map[floor(corners[3].y)][floor(corners[3].x)] == "W") {
             return true;
@@ -154,7 +157,7 @@ class Car {
     }
 }
 function UWUmode(uwu) {
-    if (uwu=="uwu"||uwu=="UWU") {
+    if (uwu == "uwu" || uwu == "UWU") {
         carImage = loadImage("./assets/player_UWU.png");
     }
 }
