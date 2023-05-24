@@ -9,6 +9,7 @@ var corners = [];
 //E = End
 var carImage;
 var enemyImage;
+var selectedMap;
 var map = [];
 var map2 = [];
 var map3 = [];
@@ -99,6 +100,7 @@ function setup() {
 function draw() {
     background(255);
     showMap(map2);
+    selectedMap = map2;
     player.move(null, null, true);
     player.show(carImage);
     enemy.show(enemyImage);
@@ -308,6 +310,13 @@ function UWUmode(uwu) {
 
 //AI
 function Wander(ai){
-    ai.move(createVector(-2, 0), 0, false);
-    //console.log(ai.pos.x, " ", ai.pos.y);
+    //var aiPosX = Math.round(player.pos.x/100);
+    //var aiPosY = Math.round(player.pos.y/100);
+    //console.log(Math.round(player.pos.x/100) + " " + Math.round(player.pos.y/100));
+
+    //ai.move(createVector(-2, 0), 0, false);
+
+    //if(selectedMap[aiPosX + 1][aiPosY + 1] == " " || selectedMap[aiPosX + 1][aiPosY + 1] == "G"){
+    //    console.log("There Is A Open Path To Thy Right")
+    //}
 }
