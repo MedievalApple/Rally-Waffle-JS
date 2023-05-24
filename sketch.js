@@ -287,13 +287,13 @@ class Car {
             }
             return true;
         }
-        for(let t = 0; t < 1; t+=0.1) {
-            if(map2[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))]=="W") {
+        for (let t = 0; t < 1; t += 0.1) {
+            if (map2[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
                 return true;
             }
         }
-        for(let t = 0; t < 1; t+=0.1) {
-            if(map2[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))]=="W") {
+        for (let t = 0; t < 1; t += 0.1) {
+            if (map2[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
                 return true;
             }
         }
@@ -309,14 +309,13 @@ function UWUmode(uwu) {
 }
 
 //AI
-function Wander(ai){
-    //var aiPosX = Math.round(player.pos.x/100);
-    //var aiPosY = Math.round(player.pos.y/100);
-    //console.log(Math.round(player.pos.x/100) + " " + Math.round(player.pos.y/100));
+function Wander(ai) {
+    var aiPos = (ai.pos.copy().sub(createVector(0, gridSize/2))).mult(1 / gridSize);
+    console.log(floor(aiPos.x) + " " + floor(aiPos.y));
+    // ai.move(createVector(0, -2), 0, false);
 
-    //ai.move(createVector(-2, 0), 0, false);
-
-    //if(selectedMap[aiPosX + 1][aiPosY + 1] == " " || selectedMap[aiPosX + 1][aiPosY + 1] == "G"){
-    //    console.log("There Is A Open Path To Thy Right")
-    //}
+    if (selectedMap[floor(aiPos.y)][floor(aiPos.x-1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x-1)] == "G") {
+        console.log("There Is A Open Path To Thy Right");
+        ai.move(createVector(0, -2), -PI/2, false);
+    }
 }
