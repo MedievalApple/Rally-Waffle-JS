@@ -234,14 +234,14 @@ class Car {
                 if (this.pos.x + width / 2 > 1600) {
                     worldPos.x = 1600 - width;
                 } else {
-                    worldPos.x = this.pos.x - (width / 2);
+                    worldPos.x = floor(this.pos.x - (width / 2));
                 }
             }
             if (this.pos.y > height / 2) {
                 if (this.pos.y + height / 2 > 1600) {
                     worldPos.y = 1600 - height;
                 } else {
-                    worldPos.y = this.pos.y - (height / 2);
+                    worldPos.y = floor(this.pos.y - (height / 2));
                 }
             }
         } else {
