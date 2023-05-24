@@ -6,18 +6,23 @@ var corners = [];
 //W = wall
 //S = Start
 //G = Grass
+//L = Lava
 //E = End
+//T = Tile
 var carImage;
 var enemyImage;
 var selectedMap;
 var map = [];
 var map2 = [];
 var map3 = [];
+var map5 = [];
+var worldPos;
 function setup() {
-    createCanvas(1600, 1600);
-    gridSize = width / 16;
+    createCanvas(800, 800);
+    gridSize = 100;
     player = new Car();
     enemy = new Car();
+    worldPos = createVector(0, 0);
     map = [
         ["S", "G", "G", "W", "W", "G", "W", "W", "W", "W", " ", " ", " ", " ", " ", "G"],
         [" ", " ", " ", " ", " ", " ", " ", "G", "W", "G", " ", "W", "W", "G", " ", " "],
@@ -93,6 +98,25 @@ function setup() {
         [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "W", " ", " ", " "],
         ["W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", "E"]
     ];
+
+    map5 = [
+        ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"],
+        ["W", "W", "W", "W", "L", "L", "T", "T", "T", "T", "L", "L", "W", "W", "W", "W"],
+        ["W", "W", "W", "L", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
+        ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
+        ["W", "L", "T", "T", "L", "T", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W"],
+        ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
+        ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "L", "T", "T", "T", "L"],
+        ["L", "T", "S", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
+        ["L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
+        ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "T", "T", "T", "T", "L"],
+        ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
+        ["W", "L", "T", "L", "T", "T", "T", "T", "T", "T", "T", "L", "T", "T", "L", "W"],
+        ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
+        ["W", "W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
+        ["W", "W", "W", "W", "L", "L", "T", "T", "L", "T", "L", "L", "W", "W", "W", "W"],
+        ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"]
+    ];
     carImage = loadImage("./assets/player.png");
     enemyImage = loadImage("./assets/enmeny.png");
 }
@@ -113,20 +137,20 @@ function showMap(theMap) {
                 if (theMap[i][j] == "W") {
                     fill(151);
                     noStroke();
-                    rect(j * gridSize, i * gridSize, gridSize, gridSize);
+                    rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
                 } else if (theMap[i][j] == "G") {
                     fill(0, 177, 0);
                     noStroke();
-                    rect(j * gridSize, i * gridSize, gridSize, gridSize);
+                    rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
                 }
             }
         }
     }
     for (let i = 0; i < 16; i++) {
-        stroke(51);
-        strokeWeight(3);
-        line(i * gridSize, 0, i * gridSize, height);
-        line(0, i * gridSize, width, i * gridSize);
+        // stroke(51);
+        // strokeWeight(3);
+        // line(i * gridSize, 0, i * gridSize, height);
+        // line(0, i * gridSize, width, i * gridSize);
     }
 }
 class Car {
@@ -139,7 +163,7 @@ class Car {
     }
     show(theImage) {
         push();
-        translate(this.pos.x, this.pos.y);
+        translate(this.pos.x - worldPos.x, this.pos.y - worldPos.y);
         rotate(this.carAngle);
         noStroke();
         fill(255);
@@ -168,10 +192,20 @@ class Car {
     move(vel, angle, isAI) {
         if (isAI) {
             if (keyIsDown(87)) { // w key
-                this.vel = createVector(0, -2);
+                var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                    this.vel = createVector(0, -1);
+                } else {
+                    this.vel = createVector(0, -3);
+                }
             }
             else if (keyIsDown(83)) { // s key
-                this.vel = createVector(0, 2);
+                var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                    this.vel = createVector(0, 1);
+                } else {
+                    this.vel = createVector(0, 3);
+                }
             } else {
                 this.vel = createVector(0, 0);
             }
@@ -191,6 +225,24 @@ class Car {
             if (this.collide()) {
                 console.log("Collide");
                 this.pos.sub(this.vel);
+            }
+            if (keyIsDown(88)) { // x key
+                var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                this.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
+            }
+            if (this.pos.x > width / 2) {
+                if (this.pos.x + width / 2 > 1600) {
+                    worldPos.x = 1600 - width;
+                } else {
+                    worldPos.x = this.pos.x - (width / 2);
+                }
+            }
+            if (this.pos.y > height / 2) {
+                if (this.pos.y + height / 2 > 1600) {
+                    worldPos.y = 1600 - height;
+                } else {
+                    worldPos.y = this.pos.y - (height / 2);
+                }
             }
         } else {
             this.carAngle = angle;
@@ -309,13 +361,71 @@ function UWUmode(uwu) {
 }
 
 //AI
+var aiMovingDirection = "top";
+var prevAiPos;
 function Wander(ai) {
-    var aiPos = (ai.pos.copy().sub(createVector(0, gridSize/2))).mult(1 / gridSize);
-    console.log(floor(aiPos.x) + " " + floor(aiPos.y));
-    // ai.move(createVector(0, -2), 0, false);
-
-    if (selectedMap[floor(aiPos.y)][floor(aiPos.x-1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x-1)] == "G") {
-        console.log("There Is A Open Path To Thy Right");
-        ai.move(createVector(0, -2), -PI/2, false);
+    var aiPos = (ai.pos.copy()).mult(1 / gridSize);
+    if (!prevAiPos) {
+        prevAiPos = aiPos.copy();
+        ai.move(createVector(0, -2), -PI / 2, false);
     }
+    if (floor(aiPos.x) == floor(prevAiPos.x) && floor(aiPos.y) == floor(prevAiPos.y)) {
+        switch (aiMovingDirection) {
+            case "left":
+                ai.move(createVector(0, -2), -PI / 2, false);
+                break;
+            case "right":
+                ai.move(createVector(0, -2), PI / 2, false);
+                break;
+            case "top":
+                ai.move(createVector(0, -2), 0, false);
+                break;
+            case "bottom":
+                ai.move(createVector(0, -2), PI, false);
+                break;
+            default:
+                console.log(aiMovingDirection)
+        }
+    } else {
+        var boardPos = (ai.pos.copy()).mult(1 / gridSize);
+        ai.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
+
+        var avaibleDirections = [];
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G") {
+            avaibleDirections.push("left");
+            // ai.move(createVector(0, -2), -PI / 2, false);
+        }
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "G") {
+            avaibleDirections.push("right");
+            // ai.move(createVector(0, -2), -PI / 2, false);
+        }
+        if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G") {
+            avaibleDirections.push("top");
+            // ai.move(createVector(0, -2), -PI / 2, false);
+        }
+        if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G") {
+            avaibleDirections.push("bottom");
+            // ai.move(createVector(0, -2), -PI / 2, false);
+        }
+        aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
+        switch (aiMovingDirection) {
+            case "left":
+                ai.move(createVector(0, -2), -PI / 2, false);
+                break;
+            case "right":
+                ai.move(createVector(0, -2), PI / 2, false);
+                break;
+            case "top":
+                ai.move(createVector(0, -2), 0, false);
+                break;
+            case "bottom":
+                ai.move(createVector(0, -2), PI, false);
+                break;
+            default:
+                console.log(aiMovingDirection)
+        }
+        console.log("Change Spot");
+    }
+    prevAiPos.x = floor(aiPos.x);
+    prevAiPos.y = floor(aiPos.y);
 }
