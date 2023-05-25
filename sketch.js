@@ -379,7 +379,7 @@ function Wander(ai) {
         prevAiPos = aiPos.copy();
         ai.move(createVector(0, -2), -PI / 2, false);
     }
-    if (floor(aiPos.x) == floor(prevAiPos.x) && floor(aiPos.y) == floor(prevAiPos.y)) {
+    if (!(abs(aiPos.x - prevAiPos.x)>1 || abs(aiPos.y - prevAiPos.y)>1)) {
         switch (aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -2), -PI / 2, false);
@@ -397,8 +397,10 @@ function Wander(ai) {
                 console.log(aiMovingDirection)
         }
     } else {
+        prevAiPos.x = aiPos.x;
+        prevAiPos.y = aiPos.y;
         var boardPos = (ai.pos.copy()).mult(1 / gridSize);
-        ai.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
+        // ai.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
 
         var avaibleDirections = [];
         if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G") {
@@ -415,9 +417,11 @@ function Wander(ai) {
                 // ai.move(createVector(0, -2), -PI / 2, false);
             }
         }
-        if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G") {
-            avaibleDirections.push("bottom");
-            // ai.move(createVector(0, -2), -PI / 2, false);
+        if (withInBounds(floor(aiPos.y + 1), floor(aiPos.x))) {
+            if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G") {
+                avaibleDirections.push("bottom");
+                // ai.move(createVector(0, -2), -PI / 2, false);
+            }
         }
         aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
         switch (aiMovingDirection) {
@@ -438,8 +442,6 @@ function Wander(ai) {
         }
         console.log("Change Spot");
     }
-    prevAiPos.x = floor(aiPos.x);
-    prevAiPos.y = floor(aiPos.y);
 }
 function withInBounds(x, y) {
     if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;
