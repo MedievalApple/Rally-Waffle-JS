@@ -361,7 +361,7 @@ function UWUmode(uwu) {
 }
 
 //AI
-var aiMovingDirection = "top";
+var aiMovingDirection = "bottom";
 var prevAiPos;
 function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
