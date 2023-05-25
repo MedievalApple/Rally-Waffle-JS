@@ -199,6 +199,13 @@ function draw() {
     }
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
+        if (mapleSyrups[i].collide()) {
+            mapleSyrups = mapleSyrups.splice(i, 1);
+            player.health = 1;
+        }
+    }
+    if(mapleSyrups.length==0) {
+        alert("You Win");
     }
 }
 function showMap(theMap) {
@@ -547,12 +554,21 @@ class Syrup {
         noStroke();
         circle(this.x * gridSize - worldPos.x + gridSize / 2, this.y * gridSize - worldPos.y + gridSize / 2, 15);
     }
+    collide() {
+        var boardPos = (player.pos.copy()).mult(1 / gridSize);
+        if (selectedMap[this.y][this.x] == selectedMap[floor(boardPos.y)][floor(boardPos.x)]) { 
+            console.log(this.x, this.y," ",floor(boardPos.x), floor(boardPos.y));
+            return true; 
+        }
+        return false;
+    }
 }
 function spawnSyrups(theMap) {
     for (let i = 0; i < theMap.length; i++) {
         for (let j = 0; j < theMap[0].length; j++) {
             if (theMap[i][j]) {
                 if (theMap[i][j] == "M") {
+                    console.log(j, i);
                     mapleSyrups.push(new Syrup(j, i));
                 }
             }
@@ -631,7 +647,6 @@ function Wander(ai) {
             default:
                 console.log(ai.aiMovingDirection)
         }
-        console.log("Change Spot");
     }
 }
 function withInBounds(x, y) {
