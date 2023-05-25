@@ -1,5 +1,5 @@
 var player;
-var enemy;
+var enemy = [];
 var blocks = [];
 var gridSize;
 var corners = [];
@@ -16,12 +16,17 @@ var map = [];
 var map2 = [];
 var map3 = [];
 var map5 = [];
+var road = []
 var worldPos;
+var numEnemy = 10;
 function setup() {
     createCanvas(800, 800);
     gridSize = 100;
     player = new Car();
-    enemy = new Car();
+    for (let i = 0; i < numEnemy; i++) {
+        enemy[i] = new Car();
+    }
+    //enemy = new Car();
     worldPos = createVector(0, 0);
     map = [
         ["S", "G", "G", "W", "W", "G", "W", "W", "W", "W", " ", " ", " ", " ", " ", "G"],
@@ -30,9 +35,9 @@ function setup() {
         [" ", "W", "W", " ", "W", "W", "W", " ", "W", "W", "G", "G", "W", "G", "W", " "],
         [" ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "W", "G", "G", "G", "G", " "],
         [" ", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
-        [" ", " ", " ", "G", "G", "W", "G", " ", " ", "W", " ", " ", " ", " ", " ", " "],
-        [" ", "G", " ", "W", "G", "G", "G", "G", " ", "W", " ", "G", "W", "W", "G", " "],
-        [" ", "W", " ", " ", " ", " ", " ", "W", "G", " ", " ", "G", "G", "W", " ", " "],
+        [" ", " ", " ", "G", "G", "W", "G", "G", "G", "W", " ", " ", " ", " ", " ", " "],
+        [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", " "],
+        [" ", "W", " ", " ", " ", " ", " ", "W", "G", "H", " ", "G", "G", "W", " ", " "],
         [" ", "G", " ", "G", "W", "G", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G"],
         [" ", " ", " ", " ", " ", " ", " ", " ", "G", "G", " ", "G", " ", "G", " ", "W"],
         [" ", "W", "W", " ", "W", "G", "G", " ", " ", " ", " ", "G", " ", " ", " ", " "],
@@ -40,6 +45,25 @@ function setup() {
         [" ", "W", " ", " ", " ", " ", " ", " ", "G", "W", "W", "G", " ", "W", "W", " "],
         [" ", "W", " ", "G", "G", "W", "G", " ", " ", "G", "W", "G", " ", "G", "G", " "],
         [" ", " ", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", " ", " ", " ", " "]
+    ];
+
+    road = [
+        ["V", "-", "-", "-", "-", "-", "-", "-", "-", "-", " ", "H", "H", "H", " ", "-"],
+        [" ", "H", "H", "T", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", "L", " "],
+        ["V", "-", "-", "V", "-", "-", "L", " ", "H", "H", "V", "-", "-", "-", "-", "V"],
+        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", " ", "-", "-", "-", "-", "V"],
+        ["V", "-", "-", " ", "H", "H", "H", " ", "-", "-", "-", "-", "-", "-", "-", "V"],
+        ["V", "-", " ", " ", "-", "-", "-", "L", "H", "H", " ", "-", "-", "-", "-", "V"],
+        [" ", "H", " ", "-", "-", "-", "-", "-", "-", "-", " ", " ", " ", " ", " ", " "],
+        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
+        ["V", "W", " ", "H", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", " ", " "],
+        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", " ", "H", "T", "H", " ", "-"],
+        [" ", "H", " ", "T", " ", " ", " ", " ", "-", "-", "V", "-", "V", "-", "V", "-"],
+        ["V", "-", "-", "V", "-", "-", "-", " ", "H", "H", " ", "G", " ", "H", "H", " "],
+        ["V", "W", "W", "V", "W", "W", "W", "V", "G", "G", "W", "G", "V", "G", "G", "V"],
+        ["V", "W", " ", " ", " ", " ", " ", " ", "G", "W", "W", "G", "V", "W", "W", "V"],
+        ["V", "W", "V", "G", "G", "W", "G", " ", " ", "G", "W", "G", "V", "G", "G", "V"],
+        ["L", "H", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", " ", "H", "H", " "]
     ];
 
     map2 = [
@@ -127,8 +151,10 @@ function draw() {
     selectedMap = map2;
     player.move(null, null, true);
     player.show(carImage, true);
-    enemy.show(enemyImage);
-    Wander(enemy);
+    for (let i = 0; i < numEnemy; i++) {
+        enemy[i].show(enemyImage);
+        Wander(enemy[i]);
+    }
 }
 function showMap(theMap) {
     for (let i = 0; i < theMap.length; i++) {
@@ -161,6 +187,10 @@ class Car {
         this.h = 32 * 2 - 12;
         this.vel = createVector(0, 0);
         this.health = 1;
+
+        //This is for enemies
+        this.aiMovingDirection = "top";
+        this.prevAiPos;
     }
     show(theImage, UI) {
         push();
@@ -175,13 +205,13 @@ class Car {
             stroke(0);
             rect(-this.w / 2, -50, this.w, 8, 10);
             if (this.health >= 0.75) {
-                fill(lerpColor(color(254, 212, 3), color(99, 225, 7), (this.health*4)-3));
+                fill(lerpColor(color(254, 212, 3), color(99, 225, 7), (this.health * 4) - 3));
                 // fill(99, 225, 7);
             } else if (this.health >= 0.5) {
-                fill(lerpColor(color(255, 102, 3), color(254, 212, 3), (this.health*4)-2));
+                fill(lerpColor(color(255, 102, 3), color(254, 212, 3), (this.health * 4) - 2));
                 //fill(254, 212, 3);
-            } else if (this.health > 0.25) { 
-                fill(lerpColor(color(240, 7, 10), color(255, 102, 3), (this.health*4)-1));
+            } else if (this.health > 0.25) {
+                fill(lerpColor(color(240, 7, 10), color(255, 102, 3), (this.health * 4) - 1));
                 //fill(255, 102, 3);
             } else {
                 fill(240, 7, 10);
@@ -395,16 +425,14 @@ function UWUmode(uwu) {
 }
 
 //AI
-var aiMovingDirection = "top";
-var prevAiPos;
 function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
-    if (!prevAiPos) {
-        prevAiPos = aiPos.copy();
+    if (!ai.prevAiPos) {
+        ai.prevAiPos = aiPos.copy();
         ai.move(createVector(0, -2), -PI / 2, false);
     }
-    if (!(abs(aiPos.x - prevAiPos.x) > 1 || abs(aiPos.y - prevAiPos.y) > 1)) {
-        switch (aiMovingDirection) {
+    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1)) {
+        switch (ai.aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -2), -PI / 2, false);
                 break;
@@ -418,11 +446,11 @@ function Wander(ai) {
                 ai.move(createVector(0, -2), PI, false);
                 break;
             default:
-                console.log(aiMovingDirection)
+                console.log(ai.aiMovingDirection)
         }
     } else {
-        prevAiPos.x = aiPos.x;
-        prevAiPos.y = aiPos.y;
+        ai.prevAiPos.x = aiPos.x;
+        ai.prevAiPos.y = aiPos.y;
         var avaibleDirections = [];
         if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G") {
             avaibleDirections.push("left");
@@ -444,8 +472,8 @@ function Wander(ai) {
                 // ai.move(createVector(0, -2), -PI / 2, false);
             }
         }
-        aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
-        switch (aiMovingDirection) {
+        ai.aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
+        switch (ai.aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -2), -PI / 2, false);
                 break;
@@ -459,7 +487,7 @@ function Wander(ai) {
                 ai.move(createVector(0, -2), PI, false);
                 break;
             default:
-                console.log(aiMovingDirection)
+                console.log(ai.aiMovingDirection)
         }
         console.log("Change Spot");
     }
