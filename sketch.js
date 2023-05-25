@@ -174,16 +174,18 @@ class Car {
             strokeWeight(3);
             stroke(0);
             rect(-this.w / 2, -50, this.w, 8, 10);
-            // if (this.health > 0.75) {
-            //     fill(99, 225, 7);
-            // } else if (this.health > 0.5) {
-            //     fill(254, 212, 3);
-            // } else if (this.health > 0.25) { 
-            //     fill(255, 102, 3);
-            // } else {
-            //     fill(240, 7, 10);
-            // }
-            fill(lerpColor(color(240, 7, 10), color(99, 225, 7), this.health));
+            if (this.health >= 0.75) {
+                fill(lerpColor(color(254, 212, 3), color(99, 225, 7), (this.health*4)-3));
+                // fill(99, 225, 7);
+            } else if (this.health >= 0.5) {
+                fill(lerpColor(color(255, 102, 3), color(254, 212, 3), (this.health*4)-2));
+                //fill(254, 212, 3);
+            } else if (this.health > 0.25) { 
+                fill(lerpColor(color(240, 7, 10), color(255, 102, 3), (this.health*4)-1));
+                //fill(255, 102, 3);
+            } else {
+                fill(240, 7, 10);
+            }
             noStroke();
             if (this.health < 0) this.health = 0;
             rect(-this.w / 2, -50, this.w * this.health, 8, 10);
@@ -421,9 +423,6 @@ function Wander(ai) {
     } else {
         prevAiPos.x = aiPos.x;
         prevAiPos.y = aiPos.y;
-        var boardPos = (ai.pos.copy()).mult(1 / gridSize);
-        // ai.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
-
         var avaibleDirections = [];
         if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G") {
             avaibleDirections.push("left");
