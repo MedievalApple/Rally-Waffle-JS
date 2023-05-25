@@ -126,7 +126,7 @@ function draw() {
     showMap(map2);
     selectedMap = map2;
     player.move(null, null, true);
-    player.show(carImage);
+    player.show(carImage, true);
     enemy.show(enemyImage);
     Wander(enemy);
 }
@@ -160,14 +160,34 @@ class Car {
         this.w = 32 * 2 - 10;
         this.h = 32 * 2 - 12;
         this.vel = createVector(0, 0);
+        this.health = 1;
     }
-    show(theImage) {
+    show(theImage, UI) {
         push();
         translate(this.pos.x - worldPos.x, this.pos.y - worldPos.y);
         rotate(this.carAngle);
         noStroke();
         fill(255);
         image(theImage, -this.w / 2 - 5, -this.h / 2 - 6, 64, 64);
+        if (UI) {
+            fill(255);
+            strokeWeight(3);
+            stroke(0);
+            rect(-this.w / 2, -50, this.w, 8, 10);
+            // if (this.health > 0.75) {
+            //     fill(99, 225, 7);
+            // } else if (this.health > 0.5) {
+            //     fill(254, 212, 3);
+            // } else if (this.health > 0.25) { 
+            //     fill(255, 102, 3);
+            // } else {
+            //     fill(240, 7, 10);
+            // }
+            fill(lerpColor(color(240, 7, 10), color(99, 225, 7), this.health));
+            noStroke();
+            if (this.health < 0) this.health = 0;
+            rect(-this.w / 2, -50, this.w * this.health, 8, 10);
+        }
         pop();
         stroke(255, 0, 0);
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
@@ -193,6 +213,7 @@ class Car {
         if (isAI) {
             if (keyIsDown(87)) { // w key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                this.health -= 0.001;
                 if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
                     this.vel = createVector(0, -1);
                 } else {
@@ -200,6 +221,7 @@ class Car {
                 }
             }
             else if (keyIsDown(83)) { // s key
+                this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
                     this.vel = createVector(0, 1);
@@ -379,7 +401,7 @@ function Wander(ai) {
         prevAiPos = aiPos.copy();
         ai.move(createVector(0, -2), -PI / 2, false);
     }
-    if (!(abs(aiPos.x - prevAiPos.x)>1 || abs(aiPos.y - prevAiPos.y)>1)) {
+    if (!(abs(aiPos.x - prevAiPos.x) > 1 || abs(aiPos.y - prevAiPos.y) > 1)) {
         switch (aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -2), -PI / 2, false);
