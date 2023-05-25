@@ -276,75 +276,85 @@ class Car {
         // let angle2 = atan(v2.y / v2.x);
         // text(floor(angle1), this.pos.x - 10, this.pos.y);
         // text(floor(angle2), this.pos.x + 10, this.pos.y);
-        if (map2[floor(corners[0].y)][floor(corners[0].x)] == "W") {
-            let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
-            let angle1 = atan(v1.y / v1.x);
-            let v2 = (corners[2].copy().sub(corners[0])).mult(gridSize);
-            let angle2 = atan(v2.y / v2.x);
-            if (angle2 < 0) {
-                angle2 += PI;
+        if (withInBounds(floor(corners[0].y), floor(corners[0].x))) {
+            if (map2[floor(corners[0].y)][floor(corners[0].x)] == "W") {
+                let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
+                let angle1 = atan(v1.y / v1.x);
+                let v2 = (corners[2].copy().sub(corners[0])).mult(gridSize);
+                let angle2 = atan(v2.y / v2.x);
+                if (angle2 < 0) {
+                    angle2 += PI;
+                }
+                if (angle1 < angle2) {
+                    this.carAngle += PI / 120;
+                } else {
+                    this.carAngle -= PI / 120;
+                }
+                return true;
             }
-            if (angle1 < angle2) {
-                this.carAngle += PI / 120;
-            } else {
-                this.carAngle -= PI / 120;
-            }
-            return true;
         }
-        if (map2[floor(corners[1].y)][floor(corners[1].x)] == "W") {
-            let v1 = (corners[0].copy().sub(corners[1])).mult(gridSize);
-            let v2 = (corners[3].copy().sub(corners[1])).mult(gridSize);
-            let angle1 = atan(v1.y / v1.x);
-            let angle2 = atan(v2.y / v2.x);
-            if (angle2 < 0) {
-                angle2 += PI;
+        if (withInBounds(floor(corners[1].y), floor(corners[1].x))) {
+            if (map2[floor(corners[1].y)][floor(corners[1].x)] == "W") {
+                let v1 = (corners[0].copy().sub(corners[1])).mult(gridSize);
+                let v2 = (corners[3].copy().sub(corners[1])).mult(gridSize);
+                let angle1 = atan(v1.y / v1.x);
+                let angle2 = atan(v2.y / v2.x);
+                if (angle2 < 0) {
+                    angle2 += PI;
+                }
+                if (angle1 < angle2) {
+                    this.carAngle -= PI / 120;
+                } else {
+                    this.carAngle += PI / 120;
+                }
+                return true;
             }
-            if (angle1 < angle2) {
-                this.carAngle -= PI / 120;
-            } else {
-                this.carAngle += PI / 120;
-            }
-            return true;
         }
-        if (map2[floor(corners[2].y)][floor(corners[2].x)] == "W") {
-            let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
-            let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
-            let angle1 = atan(v1.y / v1.x);
-            let angle2 = atan(v2.y / v2.x);
-            if (angle2 < 0) {
-                angle2 += PI;
+        if (withInBounds(floor(corners[2].y), floor(corners[2].x))) {
+            if (map2[floor(corners[2].y)][floor(corners[2].x)] == "W") {
+                let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
+                let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
+                let angle1 = atan(v1.y / v1.x);
+                let angle2 = atan(v2.y / v2.x);
+                if (angle2 < 0) {
+                    angle2 += PI;
+                }
+                if (angle1 < angle2) {
+                    this.carAngle += PI / 120;
+                } else {
+                    this.carAngle -= PI / 120;
+                }
+                return true;
             }
-            if (angle1 < angle2) {
-                this.carAngle += PI / 120;
-            } else {
-                this.carAngle -= PI / 120;
-            }
-            return true;
         }
-        if (map2[floor(corners[3].y)][floor(corners[3].x)] == "W") {
-            let v1 = (corners[1].copy().sub(corners[3])).mult(gridSize);
-            let v2 = (corners[2].copy().sub(corners[3])).mult(gridSize);
-            let angle1 = atan(v1.y / v1.x);
-            let angle2 = atan(v2.y / v2.x);
-            if (angle2 < 0) {
-                angle2 += PI;
+        if (withInBounds(floor(corners[3].y), floor(corners[3].x))) {
+            if (map2[floor(corners[3].y)][floor(corners[3].x)] == "W") {
+                let v1 = (corners[1].copy().sub(corners[3])).mult(gridSize);
+                let v2 = (corners[2].copy().sub(corners[3])).mult(gridSize);
+                let angle1 = atan(v1.y / v1.x);
+                let angle2 = atan(v2.y / v2.x);
+                if (angle2 < 0) {
+                    angle2 += PI;
+                }
+                if (angle1 < 0) {
+                    angle1 += PI;
+                }
+                if (angle1 < angle2) {
+                    this.carAngle -= PI / 120;
+                } else {
+                    this.carAngle += PI / 120;
+                }
+                return true;
             }
-            if (angle1 < 0) {
-                angle1 += PI;
-            }
-            if (angle1 < angle2) {
-                this.carAngle -= PI / 120;
-            } else {
-                this.carAngle += PI / 120;
-            }
-            return true;
         }
         for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return true;
             if (map2[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
                 return true;
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return true;
             if (map2[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
                 return true;
             }
@@ -399,9 +409,11 @@ function Wander(ai) {
             avaibleDirections.push("right");
             // ai.move(createVector(0, -2), -PI / 2, false);
         }
-        if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G") {
-            avaibleDirections.push("top");
-            // ai.move(createVector(0, -2), -PI / 2, false);
+        if (withInBounds(floor(aiPos.y - 1), floor(aiPos.x))) {
+            if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G") {
+                avaibleDirections.push("top");
+                // ai.move(createVector(0, -2), -PI / 2, false);
+            }
         }
         if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G") {
             avaibleDirections.push("bottom");
@@ -428,4 +440,8 @@ function Wander(ai) {
     }
     prevAiPos.x = floor(aiPos.x);
     prevAiPos.y = floor(aiPos.y);
+}
+function withInBounds(x, y) {
+    if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;
+    return true;
 }
