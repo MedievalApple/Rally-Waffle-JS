@@ -1,6 +1,6 @@
 var player;
 var enemy = [];
-var blocks = [];
+var mapleSyrups = [];
 var gridSize;
 var corners = [];
 //W = wall
@@ -41,21 +41,21 @@ function setup() {
     worldPos = createVector(0, 0);
     map = [
         ["S", "G", "G", "W", "W", "G", "W", "W", "W", "W", " ", " ", " ", " ", " ", "G"],
-        [" ", " ", " ", " ", " ", " ", " ", "G", "W", "G", " ", "W", "W", "G", " ", " "],
-        [" ", "W", "W", " ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "G", "G", " "],
+        [" ", " ", " ", " ", " ", " ", " ", "G", "W", "G", "M", "W", "W", "G", " ", " "],
+        [" ", "W", "W", " ", "W", "W", " ", "M", " ", " ", " ", "W", "W", "G", "G", " "],
         [" ", "W", "W", " ", "W", "W", "W", " ", "W", "W", "G", "G", "W", "G", "W", " "],
-        [" ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "W", "G", "G", "G", "G", " "],
-        [" ", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
+        [" ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "W", "G", "G", "G", "G", "M"],
+        ["M", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
         [" ", " ", " ", "G", "G", "W", "G", "G", "G", "W", " ", " ", " ", " ", " ", " "],
-        [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", " "],
-        [" ", "W", " ", " ", " ", " ", " ", "W", "G", "H", " ", "G", "G", "W", " ", " "],
-        [" ", "G", " ", "G", "W", "G", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G"],
+        [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", "M"],
+        [" ", "W", " ", " ", " ", " ", "M", "W", "G", "H", "M", "G", "G", "W", " ", " "],
+        [" ", "G", "M", "G", "W", "G", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G"],
         [" ", " ", " ", " ", " ", " ", " ", " ", "G", "G", " ", "G", " ", "G", " ", "W"],
-        [" ", "W", "W", " ", "W", "G", "G", " ", " ", " ", " ", "G", " ", " ", " ", " "],
+        [" ", "W", "W", " ", "W", "G", "G", " ", " ", "M", " ", "G", " ", "M", " ", " "],
         [" ", "W", "W", " ", "W", "W", "W", " ", "G", "G", "W", "G", " ", "G", "G", " "],
-        [" ", "W", " ", " ", " ", " ", " ", " ", "G", "W", "W", "G", " ", "W", "W", " "],
+        [" ", "W", " ", " ", "M", " ", " ", " ", "G", "W", "W", "G", " ", "W", "W", " "],
         [" ", "W", " ", "G", "G", "W", "G", " ", " ", "G", "W", "G", " ", "G", "G", " "],
-        [" ", " ", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", " ", " ", " ", " "]
+        ["M", " ", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", "M", " ", " ", " "]
     ];
 
     road = [
@@ -183,6 +183,7 @@ function setup() {
     TRightRoadImage = loadImage("./assets/tRight.png");
     TLeftRoadImage = loadImage("./assets/tLeft.png");
     TTopRoadImage = loadImage("./assets/tTop.png");
+    spawnSyrups(map);
 }
 
 function draw() {
@@ -195,6 +196,9 @@ function draw() {
     for (let i = 0; i < numEnemy; i++) {
         enemy[i].show(enemyImage);
         Wander(enemy[i]);
+    }
+    for (let i = 0; i < mapleSyrups.length; i++) {
+        mapleSyrups[i].show();
     }
 }
 function showMap(theMap) {
@@ -213,12 +217,6 @@ function showMap(theMap) {
                 }
             }
         }
-    }
-    for (let i = 0; i < 16; i++) {
-        // stroke(51);
-        // strokeWeight(3);
-        // line(i * gridSize, 0, i * gridSize, height);
-        // line(0, i * gridSize, width, i * gridSize);
     }
 }
 function showRoad(theRoad) {
@@ -539,6 +537,28 @@ class Car {
     }
 }
 
+class Syrup {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    show() {
+        fill(255, 255, 0);
+        noStroke();
+        circle(this.x * gridSize - worldPos.x + gridSize / 2, this.y * gridSize - worldPos.y + gridSize / 2, 15);
+    }
+}
+function spawnSyrups(theMap) {
+    for (let i = 0; i < theMap.length; i++) {
+        for (let j = 0; j < theMap[0].length; j++) {
+            if (theMap[i][j]) {
+                if (theMap[i][j] == "M") {
+                    mapleSyrups.push(new Syrup(j, i));
+                }
+            }
+        }
+    }
+}
 //Switches Player Sprite To UWU
 function UWUmode(uwu) {
     if (uwu == "uwu" || uwu == "UWU") {
