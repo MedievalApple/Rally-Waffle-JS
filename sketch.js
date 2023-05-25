@@ -11,6 +11,7 @@ var corners = [];
 //T = Tile
 var carImage;
 var enemyImage;
+var grassImage;
 var selectedMap;
 var map = [];
 var map2 = [];
@@ -19,6 +20,13 @@ var map5 = [];
 var road = []
 var worldPos;
 var numEnemy = 10;
+var straigtRoadImage;
+var verticalRoadImage;
+var cornerRoadImage;
+var cornerRightRoadImage;
+var TRoadImage;
+var TRightRoadImage;
+var TLeftRoadImage;
 function setup() {
     createCanvas(800, 800);
     gridSize = 100;
@@ -48,22 +56,22 @@ function setup() {
     ];
 
     road = [
-        ["V", "-", "-", "-", "-", "-", "-", "-", "-", "-", " ", "H", "H", "H", " ", "-"],
-        [" ", "H", "H", "T", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", "L", " "],
-        ["V", "-", "-", "V", "-", "-", "L", " ", "H", "H", "V", "-", "-", "-", "-", "V"],
-        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", " ", "-", "-", "-", "-", "V"],
-        ["V", "-", "-", " ", "H", "H", "H", " ", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "-", " ", " ", "-", "-", "-", "L", "H", "H", " ", "-", "-", "-", "-", "V"],
-        [" ", "H", " ", "-", "-", "-", "-", "-", "-", "-", " ", " ", " ", " ", " ", " "],
+        ["V", "-", "-", "-", "-", "-", "-", "-", "-", "-", "F", "H", "H", "H", "C", "-"],
+        ["TR", "H", "H", "T", "H", "H", "C", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
+        ["V", "-", "-", "V", "-", "-", "CR", "T", "H", "H", "C", "-", "-", "-", "-", "V"],
+        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V"],
+        ["V", "-", "-", "TR", "H", "H", "H", " ", "-", "-", "-", "-", "-", "-", "-", "V"],
+        ["V", "-", "C", "C", "-", "-", "-", "CR", "H", "H", " ", "-", "-", "-", "-", "V"],
+        ["TR", "H", "TL", "-", "-", "-", "-", "-", "-", "-", " ", "H", "H", "H", "H", " "],
         ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
-        ["V", "W", " ", "H", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", " ", " "],
-        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", " ", "H", "T", "H", " ", "-"],
-        [" ", "H", " ", "T", " ", " ", " ", " ", "-", "-", "V", "-", "V", "-", "V", "-"],
-        ["V", "-", "-", "V", "-", "-", "-", " ", "H", "H", " ", "G", " ", "H", "H", " "],
-        ["V", "W", "W", "V", "W", "W", "W", "V", "G", "G", "W", "G", "V", "G", "G", "V"],
-        ["V", "W", " ", " ", " ", " ", " ", " ", "G", "W", "W", "G", "V", "W", "W", "V"],
-        ["V", "W", "V", "G", "G", "W", "G", " ", " ", "G", "W", "G", "V", "G", "G", "V"],
-        ["L", "H", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", " ", "H", "H", " "]
+        ["V", "W", " ", "H", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
+        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", " ", "H", "T", "H", "C", "-"],
+        ["TR", "H", " ", "T", "H", "H", "H", "C", "-", "-", "V", "-", "V", "-", "V", "-"],
+        ["V", "-", "-", "V", "-", "-", "-", " ", "H", "H", " ", "-", " ", "H", "T", "C"],
+        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "V", "-", "-", "V"],
+        ["V", "-", "C", "C", "H", "H", "H", " ", "-", "-", "-", "-", "V", "-", "-", "V"],
+        ["V", "-", "V", "-", "-", "-", "-", "C", " ", "-", "-", "-", "V", "-", "-", "V"],
+        ["CR", "H", "C", "-", "-", "-", "-", "-", "C", "H", "H", "H", " ", "H", "H", "C"]
     ];
 
     map2 = [
@@ -83,6 +91,24 @@ function setup() {
         [" ", "G", "W", "W", " ", "W", " ", " ", " ", " ", " ", "G", " ", "W", "W", " "],
         [" ", " ", " ", "W", " ", "W", "W", " ", "G", " ", " ", " ", " ", "W", " ", " "],
         ["W", "G", " ", " ", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
+    ];
+    road2 = [
+        ["-", "C", "H", "H", "H", "C", "-", "-", "-", "C", " ", "T", " ", "C", "-", "-"],
+        ["C", "C", "-", "-", "-", "C", "H", "T", "H", "C", "-", " ", "-", "C", "C", "-"],
+        ["V", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", " ", "-", "-", "C", "C"],
+        ["V", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", " ", "-", "-", "-", "V"],
+        ["V", "-", "-", "-", "C", "H", "H", "T", "-", "-", "-", " ", " ", " ", " ", "T"],
+        ["C", "C", "-", "-", "V", "-", "-", " ", "-", "-", "-", " ", "-", "-", "-", "V"],
+        ["-", "C", "H", "H", "T", "-", "-", " ", "-", "-", "-", " ", "-", "-", "-", "V"],
+        ["-", "-", "-", "-", "T", "I", " ", " ", "-", "-", "-", " ", " ", " ", " ", "C"],
+        ["-", "C", "H", "T", "I", "I", "-", "-", "-", " ", " ", " ", " ", " ", "-", "-"],
+        ["C", "C", "-", "V", "-", " ", " ", " ", " ", " ", " ", "-", "-", " ", " ", " "],
+        ["V", "-", "-", "V", "-", "-", "-", " ", "-", "-", " ", "-", "-", "-", "-", " "],
+        ["V", "-", "-", "C", "T", "-", "-", " ", " ", "-", " ", " ", "-", "-", "-", " "],
+        ["V", "-", "-", "-", "T", " ", " ", "-", " ", "-", " ", " ", " ", " ", " ", " "],
+        ["V", "-", "-", "-", "V", "-", " ", " ", " ", " ", " ", "-", " ", "-", "-", " "],
+        ["C", "H", "T", "-", "V", "-", "-", " ", "-", " ", " ", " ", " ", "-", " ", " "],
+        ["-", "-", "C", "H", "C", "-", "-", " ", "-", "-", "-", "-", " ", " ", " ", "-"]
     ];
 
     map3 = [
@@ -143,12 +169,21 @@ function setup() {
     ];
     carImage = loadImage("./assets/player.png");
     enemyImage = loadImage("./assets/enmeny.png");
+    grassImage = loadImage("./assets/grass.png");
+    straigtRoadImage = loadImage("./assets/stright.png");
+    verticalRoadImage = loadImage("./assets/strightRotate90.png");
+    cornerRoadImage = loadImage("./assets/90.png");
+    cornerRightRoadImage = loadImage("./assets/90Right.png");
+    TRoadImage = loadImage("./assets/t.png");
+    TRightRoadImage = loadImage("./assets/tRight.png");
+    TLeftRoadImage = loadImage("./assets/tLeft.png");
 }
 
 function draw() {
     background(255);
-    showMap(map2);
-    selectedMap = map2;
+    showMap(map);
+    showRoad(road);
+    selectedMap = map;
     player.move(null, null, true);
     player.show(carImage, true);
     for (let i = 0; i < numEnemy; i++) {
@@ -167,7 +202,8 @@ function showMap(theMap) {
                 } else if (theMap[i][j] == "G") {
                     fill(0, 177, 0);
                     noStroke();
-                    rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    image(grassImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    grassImage.resizeNN(gridSize, gridSize);
                 }
             }
         }
@@ -177,6 +213,64 @@ function showMap(theMap) {
         // strokeWeight(3);
         // line(i * gridSize, 0, i * gridSize, height);
         // line(0, i * gridSize, width, i * gridSize);
+    }
+}
+function showRoad(theRoad) {
+    for (let i = 0; i < theRoad.length; i++) {
+        for (let j = 0; j < theRoad[0].length; j++) {
+            if (theRoad[i][j]) {
+                if (theRoad[i][j] == "H") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    //image(straigtRoadImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    image(straigtRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    straigtRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                    //rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                } else if (theRoad[i][j] == "V") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(verticalRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    verticalRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "T") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(TRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    TRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "C") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(cornerRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    cornerRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "TR") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(TRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    TRightRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                }else if (theRoad[i][j] == "TL") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(TLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    TLeftRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "CR") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(cornerRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    cornerRightRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                }
+            }
+        }
     }
 }
 class Car {
@@ -199,6 +293,7 @@ class Car {
         noStroke();
         fill(255);
         image(theImage, -this.w / 2 - 5, -this.h / 2 - 6, 64, 64);
+        theImage.resizeNN(gridSize, gridSize);
         if (UI) {
             fill(255);
             strokeWeight(3);
@@ -246,7 +341,7 @@ class Car {
             if (keyIsDown(87)) { // w key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.health -= 0.001;
-                if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
                     this.vel = createVector(0, -1);
                 } else {
                     this.vel = createVector(0, -3);
@@ -255,7 +350,7 @@ class Car {
             else if (keyIsDown(83)) { // s key
                 this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
-                if (map2[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
                     this.vel = createVector(0, 1);
                 } else {
                     this.vel = createVector(0, 3);
@@ -331,7 +426,7 @@ class Car {
         // text(floor(angle1), this.pos.x - 10, this.pos.y);
         // text(floor(angle2), this.pos.x + 10, this.pos.y);
         if (withInBounds(floor(corners[0].y), floor(corners[0].x))) {
-            if (map2[floor(corners[0].y)][floor(corners[0].x)] == "W") {
+            if (selectedMap[floor(corners[0].y)][floor(corners[0].x)] == "W") {
                 let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
                 let v2 = (corners[2].copy().sub(corners[0])).mult(gridSize);
@@ -348,7 +443,7 @@ class Car {
             }
         }
         if (withInBounds(floor(corners[1].y), floor(corners[1].x))) {
-            if (map2[floor(corners[1].y)][floor(corners[1].x)] == "W") {
+            if (selectedMap[floor(corners[1].y)][floor(corners[1].x)] == "W") {
                 let v1 = (corners[0].copy().sub(corners[1])).mult(gridSize);
                 let v2 = (corners[3].copy().sub(corners[1])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
@@ -365,7 +460,7 @@ class Car {
             }
         }
         if (withInBounds(floor(corners[2].y), floor(corners[2].x))) {
-            if (map2[floor(corners[2].y)][floor(corners[2].x)] == "W") {
+            if (selectedMap[floor(corners[2].y)][floor(corners[2].x)] == "W") {
                 let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
                 let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
@@ -382,7 +477,7 @@ class Car {
             }
         }
         if (withInBounds(floor(corners[3].y), floor(corners[3].x))) {
-            if (map2[floor(corners[3].y)][floor(corners[3].x)] == "W") {
+            if (selectedMap[floor(corners[3].y)][floor(corners[3].x)] == "W") {
                 let v1 = (corners[1].copy().sub(corners[3])).mult(gridSize);
                 let v2 = (corners[2].copy().sub(corners[3])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
@@ -403,13 +498,13 @@ class Car {
         }
         for (let t = 0; t < 1; t += 0.1) {
             if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return true;
-            if (map2[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
+            if (selectedMap[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
                 return true;
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
             if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return true;
-            if (map2[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
+            if (selectedMap[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
                 return true;
             }
         }
