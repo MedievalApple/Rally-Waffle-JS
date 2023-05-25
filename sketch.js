@@ -29,6 +29,7 @@ var cornerDownRoadImage;
 var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
+var TTopRoadImage;
 function setup() {
     createCanvas(800, 800);
     gridSize = 100;
@@ -58,22 +59,22 @@ function setup() {
     ];
 
     road = [
-        ["V", "-", "-", "-", "-", "-", "-", "-", "-", "-", "F", "H", "H", "H", "C", "-"],
-        ["TR", "H", "H", "T", "H", "H", "CD", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
-        ["V", "-", "-", "V", "-", "-", "CR", "T", "H", "H", "C", "-", "-", "-", "-", "V"],
-        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "-", "-", "TR", "H", "H", "H", " ", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "-", "CL", "C", "-", "-", "-", "CR", "H", "H", " ", "-", "-", "-", "-", "V"],
-        ["TR", "H", "TL", "-", "-", "-", "-", "-", "-", "-", " ", "H", "H", "H", "H", " "],
-        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
-        ["V", "W", " ", "H", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
-        ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", " ", "H", "T", "H", "C", "-"],
-        ["TR", "H", " ", "T", "H", "H", "H", "C", "-", "-", "V", "-", "V", "-", "V", "-"],
-        ["V", "-", "-", "V", "-", "-", "-", " ", "H", "H", " ", "-", " ", "H", "T", "C"],
-        ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "V", "-", "-", "V"],
-        ["V", "-", "C", "C", "H", "H", "H", " ", "-", "-", "-", "-", "V", "-", "-", "V"],
-        ["V", "-", "V", "-", "-", "-", "-", "C", " ", "-", "-", "-", "V", "-", "-", "V"],
-        ["CR", "H", "C", "-", "-", "-", "-", "-", "C", "H", "H", "H", " ", "H", "H", "C"]
+        ["V", "--", "--", "-", "-", "-", "-", "-", "-", "-", "CL", "H", "H", "H", "CD", "-"],
+        ["TR", "H", "H", "T", "H", "H", "CD", "-", "-", "-", "V", "-", "-", "-", "CR", "CD"],
+        ["V", "--", "--", "V", "-", "-", "CR", "T", "H", "H", "C", "-", "-", "-", "-", "V"],
+        ["V", "--", "--", "V", "-", "-", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V"],
+        ["V", "--", "--", "TR", "H", "H", "H", "TL", "-", "-", "-", "-", "-", "-", "-", "V"],
+        ["V", "--", "CL", "C", "-", "-", "-", "CR", "H", "H", "CD", "-", "-", "-", "-", "V"],
+        ["TR", "H", "TL", "-", "-", "-", "-", "-", "-", "-", "TR", "H", "H", "H", "H", "TL"],
+        ["V", "--", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
+        ["V", "--", "TR", "H", "H", "H", "CD", "-", "-", "H", "TL", "-", "-", "-", "CL", "C"],
+        ["V", "--", "V", "-", "-", "-", "V", "-", "-", "-", "TR", "H", "T", "H", "TL", "-"],
+        ["TR", "H", "TT", "T", "H", "H", "TT", "CD", "-", "-", "V", "-", "V", "-", "V", "-"],
+        ["V", "--", "-", "V", "-", "-", "-", "TR", "H", "H", "C", "-", "TR", "H", "TT", "CD"],
+        ["V", "--", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "V", "", "-", "V"],
+        ["V", "--", "CL", "TT", "H", "H", "H", "TL", "-", "-", "-", "-", "V", "-", "-", "V"],
+        ["V", "--", "V", "-", "-", "-", "-", "CR", "CD", "-", "-", "-", "V", "-", "-", "V"],
+        ["CR", "H", "C", "-", "-", "-", "-", "-", "CR", "H", "H", "H", "TT", "H", "H", "C"]
     ];
 
     map2 = [
@@ -181,12 +182,13 @@ function setup() {
     TRoadImage = loadImage("./assets/t.png");
     TRightRoadImage = loadImage("./assets/tRight.png");
     TLeftRoadImage = loadImage("./assets/tLeft.png");
+    TTopRoadImage = loadImage("./assets/tTop.png");
 }
 
 function draw() {
     background(255);
-    showMap(map);
     showRoad(road);
+    showMap(map);
     selectedMap = map;
     player.move(null, null, true);
     player.show(carImage, true);
@@ -258,12 +260,19 @@ function showRoad(theRoad) {
                     //image(straigtRoadImage, 0,0);
                     TRightRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                }else if (theRoad[i][j] == "TL") {
+                } else if (theRoad[i][j] == "TL") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(TLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     TLeftRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "TT") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(TTopRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    TTopRoadImage.resizeNN(gridSize, gridSize);
                     pop();
                 } else if (theRoad[i][j] == "CR") {
                     push();
@@ -272,14 +281,14 @@ function showRoad(theRoad) {
                     //image(straigtRoadImage, 0,0);
                     cornerRightRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                }else if (theRoad[i][j] == "CL") {
+                } else if (theRoad[i][j] == "CL") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerLeftRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                }else if (theRoad[i][j] == "CD") {
+                } else if (theRoad[i][j] == "CD") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerDownRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
