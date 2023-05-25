@@ -24,6 +24,8 @@ var straigtRoadImage;
 var verticalRoadImage;
 var cornerRoadImage;
 var cornerRightRoadImage;
+var cornerLeftRoadImage;
+var cornerDownRoadImage;
 var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
@@ -57,11 +59,11 @@ function setup() {
 
     road = [
         ["V", "-", "-", "-", "-", "-", "-", "-", "-", "-", "F", "H", "H", "H", "C", "-"],
-        ["TR", "H", "H", "T", "H", "H", "C", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
+        ["TR", "H", "H", "T", "H", "H", "CD", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
         ["V", "-", "-", "V", "-", "-", "CR", "T", "H", "H", "C", "-", "-", "-", "-", "V"],
         ["V", "-", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V"],
         ["V", "-", "-", "TR", "H", "H", "H", " ", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "-", "C", "C", "-", "-", "-", "CR", "H", "H", " ", "-", "-", "-", "-", "V"],
+        ["V", "-", "CL", "C", "-", "-", "-", "CR", "H", "H", " ", "-", "-", "-", "-", "V"],
         ["TR", "H", "TL", "-", "-", "-", "-", "-", "-", "-", " ", "H", "H", "H", "H", " "],
         ["V", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
         ["V", "W", " ", "H", "H", "H", " ", "-", "-", "-", "V", "-", "-", "-", "C", "C"],
@@ -174,6 +176,8 @@ function setup() {
     verticalRoadImage = loadImage("./assets/strightRotate90.png");
     cornerRoadImage = loadImage("./assets/90.png");
     cornerRightRoadImage = loadImage("./assets/90Right.png");
+    cornerLeftRoadImage = loadImage("./assets/90Left.png");
+    cornerDownRoadImage = loadImage("./assets/90Down.png");
     TRoadImage = loadImage("./assets/t.png");
     TRightRoadImage = loadImage("./assets/tRight.png");
     TLeftRoadImage = loadImage("./assets/tLeft.png");
@@ -267,6 +271,20 @@ function showRoad(theRoad) {
                     image(cornerRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerRightRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                }else if (theRoad[i][j] == "CL") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(cornerLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    cornerLeftRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                }else if (theRoad[i][j] == "CD") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(cornerDownRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    cornerDownRoadImage.resizeNN(gridSize, gridSize);
                     pop();
                 }
             }
