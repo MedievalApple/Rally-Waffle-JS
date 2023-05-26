@@ -199,8 +199,9 @@ function draw() {
     }
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
+        console.log(mapleSyrups[i].x, mapleSyrups[i].y);
         if (mapleSyrups[i].collide()) {
-            mapleSyrups = mapleSyrups.splice(i, 1);
+            mapleSyrups.splice(i, 1);
             player.health = 1;
         }
     }
@@ -556,7 +557,7 @@ class Syrup {
     }
     collide() {
         var boardPos = (player.pos.copy()).mult(1 / gridSize);
-        if (selectedMap[this.y][this.x] == selectedMap[floor(boardPos.y)][floor(boardPos.x)]) { 
+        if (this.y==floor(boardPos.y)&&this.x==floor(boardPos.x)) { 
             console.log(this.x, this.y," ",floor(boardPos.x), floor(boardPos.y));
             return true; 
         }
