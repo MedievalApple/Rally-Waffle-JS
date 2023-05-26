@@ -9,6 +9,7 @@ var corners = [];
 //L = Lava
 //E = End
 //T = Tile
+//https://www.lookuptables.com/text/extended-ascii-table
 var carImage;
 var enemyImage;
 var grassImage;
@@ -19,7 +20,7 @@ var map3 = [];
 var map5 = [];
 var road = []
 var worldPos;
-var numEnemy = 10;
+var numEnemy = 0;
 var straigtRoadImage;
 var verticalRoadImage;
 var cornerRoadImage;
@@ -34,9 +35,9 @@ function setup() {
     createCanvas(800, 800);
     gridSize = 100;
     player = new Car();
-    for (let i = 0; i < numEnemy; i++) {
-        enemy[i] = new Car();
-    }
+    // for (let i = 0; i < numEnemy; i++) {
+    //     enemy[i] = new Car();
+    // }
     //enemy = new Car();
     worldPos = createVector(0, 0);
     map = [
@@ -48,7 +49,7 @@ function setup() {
         ["M", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
         [" ", " ", " ", "G", "G", "W", "G", "G", "G", "W", " ", " ", " ", " ", " ", " "],
         [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", "M"],
-        [" ", "W", " ", " ", " ", " ", "M", "W", "G", "H", "M", "G", "G", "W", " ", " "],
+        [" ", "W", " ", " ", " ", " ", "M", "W", "G", "-", "M", "G", "G", "W", " ", " "],
         [" ", "G", "M", "G", "W", "G", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G"],
         [" ", " ", " ", " ", " ", " ", " ", " ", "G", "G", " ", "G", " ", "G", " ", "W"],
         [" ", "W", "W", " ", "W", "G", "G", " ", " ", "M", " ", "G", " ", "M", " ", " "],
@@ -59,22 +60,22 @@ function setup() {
     ];
 
     road = [
-        ["V", "--", "--", "-", "-", "-", "-", "-", "-", "-", "CL", "H", "H", "H", "CD", "-"],
-        ["TR", "H", "H", "T", "H", "H", "CD", "-", "-", "-", "V", "-", "-", "-", "CR", "CD"],
-        ["V", "--", "--", "V", "-", "-", "CR", "T", "H", "H", "C", "-", "-", "-", "-", "V"],
-        ["V", "--", "--", "V", "-", "-", "-", "V", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "--", "--", "TR", "H", "H", "H", "TL", "-", "-", "-", "-", "-", "-", "-", "V"],
-        ["V", "--", "CL", "C", "-", "-", "-", "CR", "H", "H", "CD", "-", "-", "-", "-", "V"],
-        ["TR", "H", "TL", "-", "-", "-", "-", "-", "-", "-", "TR", "H", "H", "H", "H", "TL"],
-        ["V", "--", "V", "-", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", "-", "V"],
-        ["V", "--", "TR", "H", "H", "H", "CD", "-", "-", "H", "TL", "-", "-", "-", "CL", "C"],
-        ["V", "--", "V", "-", "-", "-", "V", "-", "-", "-", "TR", "H", "T", "H", "TL", "-"],
-        ["TR", "H", "TT", "T", "H", "H", "TT", "CD", "-", "-", "V", "-", "V", "-", "V", "-"],
-        ["V", "--", "-", "V", "-", "-", "-", "TR", "H", "H", "C", "-", "TR", "H", "TT", "CD"],
-        ["V", "--", "-", "V", "-", "-", "-", "V", "-", "-", "-", "-", "V", "", "-", "V"],
-        ["V", "--", "CL", "TT", "H", "H", "H", "TL", "-", "-", "-", "-", "V", "-", "-", "V"],
-        ["V", "--", "V", "-", "-", "-", "-", "CR", "CD", "-", "-", "-", "V", "-", "-", "V"],
-        ["CR", "H", "C", "-", "-", "-", "-", "-", "CR", "H", "H", "H", "TT", "H", "H", "C"]
+        ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", "┌", "-", "-", "-", "┐", " "],
+        ["├", "-", "-", "T", "-", "-", "┐", " ", " ", " ", "|", " ", " ", " ", "L", "┐"],
+        ["|", " ", " ", "|", " ", " ", "L", "T", "-", "-", "┘", " ", " ", " ", " ", "|"],
+        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
+        ["|", " ", " ", "├", "-", "-", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "|"],
+        ["|", " ", "┌", "┘", " ", " ", " ", "L", "-", "-", "┐", " ", " ", " ", " ", "|"],
+        ["├", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "├", "-", "-", "-", "-", "┤"],
+        ["|", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", "|"],
+        ["|", " ", "├", "-", "-", "-", "┐", " ", " ", "-", "┤", " ", " ", " ", "┌", "┘"],
+        ["|", " ", "|", " ", " ", " ", "|", " ", " ", " ", "├", "-", "T", "-", "┤", " "],
+        ["├", "-", "┴", "T", "-", "-", "┴", "┐", " ", " ", "|", " ", "|", " ", "|", " "],
+        ["|", " ", " ", "|", " ", " ", " ", "├", "-", "-", "┘", " ", "├", "-", "┴", "┐"],
+        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", "|", "", " ", "|"],
+        ["|", " ", "┌", "┴", "-", "-", "-", "┤", " ", " ", " ", " ", "|", " ", " ", "|"],
+        ["|", " ", "|", " ", " ", " ", " ", "L", "┐", " ", " ", " ", "|", " ", " ", "|"],
+        ["L", "-", "┘", " ", " ", " ", " ", " ", "L", "-", "-", "-", "┴", "-", "-", "┘"]
     ];
 
     map2 = [
@@ -85,33 +86,33 @@ function setup() {
         [" ", "W", "W", "G", " ", " ", " ", " ", "W", "W", "W", " ", " ", " ", " ", " "],
         [" ", " ", "W", "G", " ", "W", "W", " ", "G", "W", "W", " ", "G", "W", "W", " "],
         ["G", " ", " ", " ", " ", "W", "W", " ", "G", "G", "G", " ", "W", "W", "W", " "],
-        ["W", "W", "W", "G", " ", " ", " ", "S", "W", "W", "G", " ", " ", " ", " ", " "],
-        ["W", " ", " ", " ", " ", " ", "W", "W", "W", " ", " ", " ", " ", " ", "W", "G"],
-        [" ", " ", "G", " ", "G", " ", " ", " ", " ", " ", " ", "W", "G", " ", " ", " "],
+        ["W", "W", "W", " ", " ", " ", " ", "S", "W", "W", "G", " ", "G", " ", " ", " "],
+        ["W", " ", " ", " ", "G", " ", "W", "W", "W", "G", " ", " ", " ", " ", "W", "G"],
+        [" ", " ", "G", " ", "W", " ", " ", " ", " ", " ", " ", "W", "G", " ", " ", " "],
         [" ", "G", "G", " ", "G", "W", "W", " ", "G", "W", " ", "W", "W", "W", "W", " "],
-        [" ", "W", "W", " ", " ", "W", "G", " ", " ", "G", " ", " ", "W", "W", "W", " "],
+        [" ", "W", "W", " ", " ", "W", "G", " ", " ", "G", " ", "G", "W", "W", "W", " "],
         [" ", "W", "W", "G", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " "],
         [" ", "G", "W", "W", " ", "W", " ", " ", " ", " ", " ", "G", " ", "W", "W", " "],
         [" ", " ", " ", "W", " ", "W", "W", " ", "G", " ", " ", " ", " ", "W", " ", " "],
         ["W", "G", " ", " ", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
     ];
     road2 = [
-        ["-", "C", "H", "H", "H", "C", "-", "-", "-", "C", " ", "T", " ", "C", "-", "-"],
-        ["C", "C", "-", "-", "-", "C", "H", "T", "H", "C", "-", " ", "-", "C", "C", "-"],
-        ["V", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", " ", "-", "-", "C", "C"],
-        ["V", "-", "-", "-", "-", "-", "-", "V", "-", "-", "-", " ", "-", "-", "-", "V"],
-        ["V", "-", "-", "-", "C", "H", "H", "T", "-", "-", "-", " ", " ", " ", " ", "T"],
-        ["C", "C", "-", "-", "V", "-", "-", " ", "-", "-", "-", " ", "-", "-", "-", "V"],
-        ["-", "C", "H", "H", "T", "-", "-", " ", "-", "-", "-", " ", "-", "-", "-", "V"],
-        ["-", "-", "-", "-", "T", "I", " ", " ", "-", "-", "-", " ", " ", " ", " ", "C"],
-        ["-", "C", "H", "T", "I", "I", "-", "-", "-", " ", " ", " ", " ", " ", "-", "-"],
-        ["C", "C", "-", "V", "-", " ", " ", " ", " ", " ", " ", "-", "-", " ", " ", " "],
-        ["V", "-", "-", "V", "-", "-", "-", " ", "-", "-", " ", "-", "-", "-", "-", " "],
-        ["V", "-", "-", "C", "T", "-", "-", " ", " ", "-", " ", " ", "-", "-", "-", " "],
-        ["V", "-", "-", "-", "T", " ", " ", "-", " ", "-", " ", " ", " ", " ", " ", " "],
-        ["V", "-", "-", "-", "V", "-", " ", " ", " ", " ", " ", "-", " ", "-", "-", " "],
-        ["C", "H", "T", "-", "V", "-", "-", " ", "-", " ", " ", " ", " ", "-", " ", " "],
-        ["-", "-", "C", "H", "C", "-", "-", " ", "-", "-", "-", "-", " ", " ", " ", "-"]
+        [" ", "┘", "-", "-", "-", "┐", " ", " ", " ", "┌", "-", "T", "-", "┐", " ", " "],
+        ["┘", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", " ", " ", "L", "┐", " "],
+        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", "L", "┐"],
+        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
+        ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "T"],
+        ["┘", "┘", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
+        [" ", "┘", "-", "-", "T", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
+        [" ", " ", " ", " ", " ", "T", "-", "┘", " ", " ", " ", " ", " ", " ", " ", "┘"],
+        [" ", "┘", "-", "├", " ", "|", " ", " ", " ", " ", " ", " ", "-", " ", " ", " "],
+        ["┘", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┴", "┤", " ", " ", " ", " "],
+        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "],
+        ["|", " ", " ", "┘", "T", " ", " ", "L", "┐", " ", " ", " ", " ", " ", " ", " "],
+        ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", " ", " ", " ", " ", " ", " "],
+        ["|", " ", " ", " ", "|", " ", "L", "T", "┴", " ", " ", " ", " ", " ", " ", " "],
+        ["┘", "-", "T", " ", "|", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", "┘", "-", "┘", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "]
     ];
 
     map3 = [
@@ -184,6 +185,13 @@ function setup() {
     TLeftRoadImage = loadImage("./assets/tLeft.png");
     TTopRoadImage = loadImage("./assets/tTop.png");
     spawnSyrups(map);
+    let miniMap = document.getElementById("miniMap");
+    for (let i = 0; i < numEnemy; i++) {
+        let syrup = document.createElement("div");
+        syrup.style = `width: 20px; height:20px; position: absolute; left:`+(mapleSyrups[i].x*20) +`px; top:`+(mapleSyrups[i].y*20)+`px; background-color: rgb(255, 255, 0);`;
+        syrup.id = mapleSyrups[i].x+"-"+mapleSyrups[i].y;
+        miniMap.append(syrup);
+    }
 }
 
 function draw() {
@@ -196,17 +204,24 @@ function draw() {
     for (let i = 0; i < numEnemy; i++) {
         enemy[i].show(enemyImage);
         Wander(enemy[i]);
+        if(enemy[i].collideOtherCar(player)) {
+            location.reload(); 
+        }
     }
+    let carHTML = document.getElementById("car");
+    carHTML.style.left = (floor(player.pos.x/gridSize)*20) +"px";
+    carHTML.style.top = (floor(player.pos.y/gridSize)*20)+"px";
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
-        console.log(mapleSyrups[i].x, mapleSyrups[i].y);
         if (mapleSyrups[i].collide()) {
+            document.getElementById(mapleSyrups[i].x+"-"+mapleSyrups[i].y).remove();
             mapleSyrups.splice(i, 1);
             player.health = 1;
         }
     }
-    if(mapleSyrups.length==0) {
+    if (mapleSyrups.length == 0) {
         alert("You Win");
+        noLoop();
     }
 }
 function showMap(theMap) {
@@ -231,7 +246,7 @@ function showRoad(theRoad) {
     for (let i = 0; i < theRoad.length; i++) {
         for (let j = 0; j < theRoad[0].length; j++) {
             if (theRoad[i][j]) {
-                if (theRoad[i][j] == "H") {
+                if (theRoad[i][j] == "-") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     //image(straigtRoadImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
@@ -239,7 +254,7 @@ function showRoad(theRoad) {
                     straigtRoadImage.resizeNN(gridSize, gridSize);
                     pop();
                     //rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
-                } else if (theRoad[i][j] == "V") {
+                } else if (theRoad[i][j] == "|") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(verticalRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
@@ -252,49 +267,49 @@ function showRoad(theRoad) {
                     image(TRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     TRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "C") {
+                } else if (theRoad[i][j] == "┘") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "TR") {
+                } else if (theRoad[i][j] == "├") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(TRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     TRightRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "TL") {
+                } else if (theRoad[i][j] == "┤") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(TLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     TLeftRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "TT") {
+                } else if (theRoad[i][j] == "┴") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(TTopRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     TTopRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "CR") {
+                } else if (theRoad[i][j] == "L") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerRightRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "CL") {
+                } else if (theRoad[i][j] == "┌") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerLeftRoadImage.resizeNN(gridSize, gridSize);
                     pop();
-                } else if (theRoad[i][j] == "CD") {
+                } else if (theRoad[i][j] == "┐") {
                     push();
                     translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
                     image(cornerDownRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
@@ -316,7 +331,7 @@ class Car {
         this.health = 1;
 
         //This is for enemies
-        this.aiMovingDirection = "top";
+        this.aiMovingDirection;
         this.prevAiPos;
     }
     show(theImage, UI) {
@@ -345,7 +360,11 @@ class Car {
                 fill(240, 7, 10);
             }
             noStroke();
-            if (this.health < 0) this.health = 0;
+            if (this.health < 0) {
+                this.health = 0;
+                alert("You Failed");
+                location.reload();
+            }
             rect(-this.w / 2, -50, this.w * this.health, 8, 10);
         }
         pop();
@@ -405,7 +424,6 @@ class Car {
             }
             this.pos.add(this.vel.rotate(this.carAngle));
             if (this.collide()) {
-                console.log("Collide");
                 this.pos.sub(this.vel);
             }
             if (keyIsDown(88)) { // x key
@@ -433,6 +451,10 @@ class Car {
                 this.pos.sub(vel);
             }
         }
+    }
+    collideOtherCar(car) {
+        if(floor(this.pos.x/gridSize)==floor(car.pos.x/gridSize)&&floor(this.pos.y/gridSize)==floor(car.pos.y/gridSize)) return true;
+        return false;
     }
     collide() {
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
@@ -557,13 +579,14 @@ class Syrup {
     }
     collide() {
         var boardPos = (player.pos.copy()).mult(1 / gridSize);
-        if (this.y==floor(boardPos.y)&&this.x==floor(boardPos.x)) { 
-            console.log(this.x, this.y," ",floor(boardPos.x), floor(boardPos.y));
-            return true; 
+        if (this.y == floor(boardPos.y) && this.x == floor(boardPos.x)) {
+            console.log(this.x, this.y, " ", floor(boardPos.x), floor(boardPos.y));
+            return true;
         }
         return false;
     }
 }
+
 function spawnSyrups(theMap) {
     for (let i = 0; i < theMap.length; i++) {
         for (let j = 0; j < theMap[0].length; j++) {
@@ -571,6 +594,9 @@ function spawnSyrups(theMap) {
                 if (theMap[i][j] == "M") {
                     console.log(j, i);
                     mapleSyrups.push(new Syrup(j, i));
+                    enemy[numEnemy] = new Car();
+                    enemy[numEnemy].pos = createVector(j * gridSize + gridSize / 2, i * gridSize + gridSize / 2);
+                    numEnemy++;
                 }
             }
         }
@@ -590,7 +616,7 @@ function Wander(ai) {
         ai.prevAiPos = aiPos.copy();
         ai.move(createVector(0, -2), -PI / 2, false);
     }
-    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1)) {
+    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1)&&ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -2), -PI / 2, false);
