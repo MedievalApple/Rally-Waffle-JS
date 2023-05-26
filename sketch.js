@@ -31,10 +31,9 @@ var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
 var TTopRoadImage;
-var player = {"Nathan":[45, "4:30"]}
 function setup() {
-    createCanvas(800, 800);
-    gridSize = 100;
+    createCanvas(floor(window.innerWidth/2.5), floor((window.innerWidth/2.5)));
+    gridSize = floor(width/8);
     player = new Car();
     // for (let i = 0; i < numEnemy; i++) {
     //     enemy[i] = new Car();
@@ -331,8 +330,8 @@ class Car {
     constructor() {
         this.pos = createVector(width / 2 - gridSize / 2, height / 2 - gridSize / 2);
         this.carAngle = 0;
-        this.w = 32 * 2 - 10;
-        this.h = 32 * 2 - 12;
+        this.w = (32-5) * (gridSize/50);
+        this.h = (32-6) * (gridSize/50);
         this.vel = createVector(0, 0);
         this.health = 1;
 
@@ -346,7 +345,7 @@ class Car {
         rotate(this.carAngle);
         noStroke();
         fill(255);
-        image(theImage, -this.w / 2 - 5, -this.h / 2 - 6, 64, 64);
+        image(theImage, -this.w / 2 - (5*(gridSize/100)), -this.h / 2 - (6*(gridSize/100)), 32 * (gridSize/50), 32 * (gridSize/50));
         theImage.resizeNN(gridSize, gridSize);
         if (UI) {
             fill(255);
@@ -400,18 +399,18 @@ class Car {
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.health -= 0.001;
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, -1);
+                    this.vel = createVector(0, -(gridSize/100));
                 } else {
-                    this.vel = createVector(0, -3);
+                    this.vel = createVector(0, -(3*gridSize/100));
                 }
             }
             else if (keyIsDown(83)) { // s key
                 this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, 1);
+                    this.vel = createVector(0, (gridSize/100));
                 } else {
-                    this.vel = createVector(0, 3);
+                    this.vel = createVector(0, (3*gridSize/100));
                 }
             } else {
                 this.vel = createVector(0, 0);
@@ -478,14 +477,6 @@ class Car {
         corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
         corners[3].add(this.pos);
         corners[3].mult(1 / gridSize);
-        // let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
-        // let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
-        //line(corners[2].x * gridSize, corners[2].y * gridSize, corners[3].x * gridSize, corners[3].y * gridSize);
-        //line(corners[0].x * gridSize, corners[0].y * gridSize, v2.x + corners[2].x * gridSize, v2.y + corners[2].y * gridSize);
-        // let angle1 = atan(v1.y / v1.x);
-        // let angle2 = atan(v2.y / v2.x);
-        // text(floor(angle1), this.pos.x - 10, this.pos.y);
-        // text(floor(angle2), this.pos.x + 10, this.pos.y);
         if (withInBounds(floor(corners[0].y), floor(corners[0].x))) {
             if (selectedMap[floor(corners[0].y)][floor(corners[0].x)] == "W") {
                 let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
@@ -620,21 +611,21 @@ function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
     if (!ai.prevAiPos) {
         ai.prevAiPos = aiPos.copy();
-        ai.move(createVector(0, -2), -PI / 2, false);
+        ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
     }
     if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1)&&ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {
             case "left":
-                ai.move(createVector(0, -2), -PI / 2, false);
+                ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
                 break;
             case "right":
-                ai.move(createVector(0, -2), PI / 2, false);
+                ai.move(createVector(0, -(2*gridSize/100)), PI / 2, false);
                 break;
             case "top":
-                ai.move(createVector(0, -2), 0, false);
+                ai.move(createVector(0, -(2*gridSize/100)), 0, false);
                 break;
             case "bottom":
-                ai.move(createVector(0, -2), PI, false);
+                ai.move(createVector(0, -(2*gridSize/100)), PI, false);
                 break;
             default:
                 console.log(ai.aiMovingDirection)
@@ -666,16 +657,16 @@ function Wander(ai) {
         ai.aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
         switch (ai.aiMovingDirection) {
             case "left":
-                ai.move(createVector(0, -2), -PI / 2, false);
+                ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
                 break;
             case "right":
-                ai.move(createVector(0, -2), PI / 2, false);
+                ai.move(createVector(0, -(2*gridSize/100)), PI / 2, false);
                 break;
             case "top":
-                ai.move(createVector(0, -2), 0, false);
+                ai.move(createVector(0, -(2*gridSize/100)), 0, false);
                 break;
             case "bottom":
-                ai.move(createVector(0, -2), PI, false);
+                ai.move(createVector(0, -(2*gridSize/100)), PI, false);
                 break;
             default:
                 console.log(ai.aiMovingDirection)
