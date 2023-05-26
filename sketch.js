@@ -31,6 +31,7 @@ var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
 var TTopRoadImage;
+var player = {"Nathan":[45, "4:30"]}
 function setup() {
     createCanvas(800, 800);
     gridSize = 100;
@@ -98,17 +99,17 @@ function setup() {
     ];
     road2 = [
         [" ", "┘", "-", "-", "-", "┐", " ", " ", " ", "┌", "-", "T", "-", "┐", " ", " "],
-        ["┘", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", " ", " ", "L", "┐", " "],
-        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", "L", "┐"],
-        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
-        ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "T"],
-        ["┘", "┘", " ", "┌", "┘", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
-        [" ", "┘", "-", "-", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
-        [" ", " ", " ", " ", "-", "T", "-", "┘", " ", " ", " ", " ", " ", " ", " ", "┘"],
-        [" ", "┘", "-", "├", " ", "|", " ", " ", " ", " ", " ", " ", "-", " ", " ", " "],
-        ["┘", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┴", "┤", " ", " ", " ", " "],
-        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["|", " ", " ", "┘", "T", " ", " ", "L", "┐", " ", " ", " ", " ", " ", " ", " "],
+        ["┘", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", "|", " ", "L", "┐", " "],
+        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", "L", "┐"],
+        ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
+        ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", "├", " ", " ", " ", "T"],
+        ["┘", "┘", " ", "┌", "┘", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
+        [" ", "┘", "-", "-", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
+        [" ", " ", " ", " ", "-", "T", "-", "┘", " ", " ", " ", "|", " ", " ", " ", "┘"],
+        [" ", "┘", "-", "├", " ", "|", " ", " ", " ", " ", "┌", " ", "-", " ", " ", " "],
+        ["┘", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┤", " ", " ", " ", " ", " "],
+        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", " "],
+        ["|", " ", " ", "┘", "T", " ", " ", "L", "┐", " ", "|", " ", " ", " ", " ", " "],
         ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", " ", " ", " ", " ", " ", " "],
         ["|", " ", " ", " ", "|", " ", "L", "T", "┴", " ", " ", " ", " ", " ", " ", " "],
         ["┘", "-", "T", " ", "|", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "],
@@ -188,12 +189,17 @@ function setup() {
     let miniMap = document.getElementById("miniMap");
     for (let i = 0; i < numEnemy; i++) {
         let syrup = document.createElement("div");
-        syrup.style = `width: 20px; height:20px; position: absolute; left:`+(mapleSyrups[i].x*20) +`px; top:`+(mapleSyrups[i].y*20)+`px; background-color: rgb(255, 255, 0);`;
+        syrup.style = `width:`+(window.innerWidth*.15*.0625)+`px; height:`+(window.innerWidth*.15*.0625)+`px; position: absolute; left:`+(mapleSyrups[i].x*window.innerWidth*.15*.0625) +`px; top:`+(mapleSyrups[i].y*window.innerWidth*.15*.0625)+`px; background-color: rgb(255, 255, 0);`;
         syrup.id = mapleSyrups[i].x+"-"+mapleSyrups[i].y;
         miniMap.append(syrup);
     }
 }
+function mousePressed() {
 
+}
+function nextLevel() {
+
+}
 function draw() {
     background(255);
     showRoad(road);
@@ -209,8 +215,8 @@ function draw() {
         }
     }
     let carHTML = document.getElementById("car");
-    carHTML.style.left = (floor(player.pos.x/gridSize)*20) +"px";
-    carHTML.style.top = (floor(player.pos.y/gridSize)*20)+"px";
+    carHTML.style.left = (floor(player.pos.x/gridSize)*(window.innerWidth*.15*.0625)) +"px";
+    carHTML.style.top = (floor(player.pos.y/gridSize)*(window.innerWidth*.15*.0625))+"px";
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
         if (mapleSyrups[i].collide()) {
