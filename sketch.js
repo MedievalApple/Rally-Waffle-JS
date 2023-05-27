@@ -31,9 +31,11 @@ var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
 var TTopRoadImage;
+var stopwatchString;
+var collectedSyrups = 0;
 function setup() {
-    createCanvas(floor(window.innerWidth/2.5), floor((window.innerWidth/2.5)));
-    gridSize = floor(width/8);
+    createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
+    gridSize = floor(width / 8);
     player = new Car();
     // for (let i = 0; i < numEnemy; i++) {
     //     enemy[i] = new Car();
@@ -188,46 +190,59 @@ function setup() {
     let miniMap = document.getElementById("miniMap");
     for (let i = 0; i < numEnemy; i++) {
         let syrup = document.createElement("div");
-        syrup.style = `width:`+(window.innerWidth*.15*.0625)+`px; height:`+(window.innerWidth*.15*.0625)+`px; position: absolute; left:`+(mapleSyrups[i].x*window.innerWidth*.15*.0625) +`px; top:`+(mapleSyrups[i].y*window.innerWidth*.15*.0625)+`px; background-color: rgb(255, 255, 0);`;
-        syrup.id = mapleSyrups[i].x+"-"+mapleSyrups[i].y;
+        syrup.style = `width:` + (window.innerWidth * .15 * .0625) + `px; height:` + (window.innerWidth * .15 * .0625) + `px; position: absolute; left:` + (mapleSyrups[i].x * window.innerWidth * .15 * .0625) + `px; top:` + (mapleSyrups[i].y * window.innerWidth * .15 * .0625) + `px; background-color: rgb(255, 255, 0);`;
+        syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
         miniMap.append(syrup);
     }
+    selectedMap = map;
 }
-function mousePressed() {
-
-}
-function nextLevel() {
-
-}
+// function mousePressed() {
+//     nextLevel();
+// }
+// function nextLevel() {
+//     selectedMap = map2
+// }
 function draw() {
+    if (!stopwatchString) {
+        startStopwatch();
+    }
     background(255);
     showRoad(road);
-    showMap(map);
-    selectedMap = map;
+    showMap(selectedMap);
     player.move(null, null, true);
     player.show(carImage, true);
     for (let i = 0; i < numEnemy; i++) {
         enemy[i].show(enemyImage);
         Wander(enemy[i]);
-        if(enemy[i].collideOtherCar(player)) {
-            location.reload(); 
+        if (enemy[i].collideOtherCar(player)) {
+            // location.reload();
+            clearInterval(stopwatchInterval);
         }
     }
     let carHTML = document.getElementById("car");
-    carHTML.style.left = (floor(player.pos.x/gridSize)*(window.innerWidth*.15*.0625)) +"px";
-    carHTML.style.top = (floor(player.pos.y/gridSize)*(window.innerWidth*.15*.0625))+"px";
+    carHTML.style.left = (floor(player.pos.x / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
+    carHTML.style.top = (floor(player.pos.y / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
         if (mapleSyrups[i].collide()) {
-            document.getElementById(mapleSyrups[i].x+"-"+mapleSyrups[i].y).remove();
+            document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
             mapleSyrups.splice(i, 1);
             player.health = 1;
+            collectedSyrups++;
         }
     }
     if (mapleSyrups.length == 0) {
         alert("You Win");
         noLoop();
     }
+    fill(255, 60, 0);
+    noStroke();
+    rect(width - 90, 5, 85, 20, 5);
+    fill(255);
+    textSize(15);
+    text(stopwatchString, width - 65, 20);
+    fill(255, 255, 0);
+    text(collectedSyrups, width - 85, 20);
 }
 function showMap(theMap) {
     for (let i = 0; i < theMap.length; i++) {
@@ -330,8 +345,8 @@ class Car {
     constructor() {
         this.pos = createVector(width / 2 - gridSize / 2, height / 2 - gridSize / 2);
         this.carAngle = 0;
-        this.w = (32-5) * (gridSize/50);
-        this.h = (32-6) * (gridSize/50);
+        this.w = (32 - 5) * (gridSize / 50);
+        this.h = (32 - 6) * (gridSize / 50);
         this.vel = createVector(0, 0);
         this.health = 1;
 
@@ -345,7 +360,7 @@ class Car {
         rotate(this.carAngle);
         noStroke();
         fill(255);
-        image(theImage, -this.w / 2 - (5*(gridSize/100)), -this.h / 2 - (6*(gridSize/100)), 32 * (gridSize/50), 32 * (gridSize/50));
+        image(theImage, -this.w / 2 - (5 * (gridSize / 100)), -this.h / 2 - (6 * (gridSize / 100)), 32 * (gridSize / 50), 32 * (gridSize / 50));
         theImage.resizeNN(gridSize, gridSize);
         if (UI) {
             fill(255);
@@ -399,18 +414,18 @@ class Car {
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.health -= 0.001;
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, -(gridSize/100));
+                    this.vel = createVector(0, -(gridSize / 100));
                 } else {
-                    this.vel = createVector(0, -(3*gridSize/100));
+                    this.vel = createVector(0, -(3 * gridSize / 100));
                 }
             }
             else if (keyIsDown(83)) { // s key
                 this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, (gridSize/100));
+                    this.vel = createVector(0, (gridSize / 100));
                 } else {
-                    this.vel = createVector(0, (3*gridSize/100));
+                    this.vel = createVector(0, (3 * gridSize / 100));
                 }
             } else {
                 this.vel = createVector(0, 0);
@@ -458,7 +473,7 @@ class Car {
         }
     }
     collideOtherCar(car) {
-        if(floor(this.pos.x/gridSize)==floor(car.pos.x/gridSize)&&floor(this.pos.y/gridSize)==floor(car.pos.y/gridSize)) return true;
+        if (floor(this.pos.x / gridSize) == floor(car.pos.x / gridSize) && floor(this.pos.y / gridSize) == floor(car.pos.y / gridSize)) return true;
         return false;
     }
     collide() {
@@ -611,21 +626,21 @@ function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
     if (!ai.prevAiPos) {
         ai.prevAiPos = aiPos.copy();
-        ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
+        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
     }
-    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1)&&ai.aiMovingDirection) {
+    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1) && ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {
             case "left":
-                ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
                 break;
             case "right":
-                ai.move(createVector(0, -(2*gridSize/100)), PI / 2, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI / 2, false);
                 break;
             case "top":
-                ai.move(createVector(0, -(2*gridSize/100)), 0, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), 0, false);
                 break;
             case "bottom":
-                ai.move(createVector(0, -(2*gridSize/100)), PI, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
                 break;
             default:
                 console.log(ai.aiMovingDirection)
@@ -657,16 +672,16 @@ function Wander(ai) {
         ai.aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
         switch (ai.aiMovingDirection) {
             case "left":
-                ai.move(createVector(0, -(2*gridSize/100)), -PI / 2, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
                 break;
             case "right":
-                ai.move(createVector(0, -(2*gridSize/100)), PI / 2, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI / 2, false);
                 break;
             case "top":
-                ai.move(createVector(0, -(2*gridSize/100)), 0, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), 0, false);
                 break;
             case "bottom":
-                ai.move(createVector(0, -(2*gridSize/100)), PI, false);
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
                 break;
             default:
                 console.log(ai.aiMovingDirection)
@@ -676,4 +691,27 @@ function Wander(ai) {
 function withInBounds(x, y) {
     if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;
     return true;
+}
+var stopwatchInterval;
+function startStopwatch() {
+    var startTime = Date.now();
+    stopwatchInterval = setInterval(function () {
+        var elapsedTime = Date.now() - startTime;
+        var minutes = Math.floor(elapsedTime / (60 * 1000));
+        var seconds = Math.floor((elapsedTime % (60 * 1000)) / 1000);
+        var milliseconds = Math.floor((elapsedTime % 1000) / 10);
+
+        // Add leading zeros if necessary
+        minutes = padNumber(minutes);
+        seconds = padNumber(seconds);
+        milliseconds = padNumber(milliseconds);
+
+        stopwatchString = minutes + ":" + seconds + ":" + milliseconds;
+
+        // You can stop the stopwatch by calling clearInterval(stopwatchInterval);
+    }, 10);
+}
+
+function padNumber(number) {
+    return number.toString().padStart(2, "0");
 }
