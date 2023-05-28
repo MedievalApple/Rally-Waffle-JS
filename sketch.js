@@ -19,9 +19,10 @@ var map = [];
 var map2 = [];
 var map3 = [];
 var map5 = [];
-var road = []
+var road = [];
+var road2;
 var worldPos;
-var numEnemy = 0;
+// var numEnemy = 0;
 var straigtRoadImage;
 var verticalRoadImage;
 var cornerRoadImage;
@@ -34,6 +35,7 @@ var TLeftRoadImage;
 var TTopRoadImage;
 var stopwatchString;
 var collectedSyrups = 0;
+var currentMap = 0;
 function setup() {
     createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
     gridSize = floor(width / 8);
@@ -85,9 +87,9 @@ function setup() {
 
     map2 = [
         ["W", " ", " ", " ", " ", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G", "W"],
-        [" ", " ", "G", "W", "G", " ", " ", " ", " ", " ", "W", " ", "G", " ", " ", "G"],
-        [" ", "G", "G", "G", "W", "W", "W", " ", "G", "G", "W", " ", "W", "W", " ", " "],
-        [" ", "W", "W", "G", "W", "W", "W", " ", "G", "W", "W", " ", "W", "W", "W", " "],
+        [" ", " ", "G", "W", "G", " ", " ", " ", " ", "M", "W", " ", "G", " ", " ", "G"],
+        [" ", "G", "G", "G", "W", "W", "W", " ", "G", "G", "W", " ", "W", "W", "M", " "],
+        ["M", "W", "W", "G", "W", "W", "W", " ", "G", "W", "W", " ", "W", "W", "W", " "],
         [" ", "W", "W", "G", " ", " ", " ", " ", "W", "W", "W", " ", " ", " ", " ", " "],
         [" ", " ", "W", " ", " ", "W", "W", " ", "G", "W", "W", " ", "G", "W", "W", " "],
         ["G", " ", " ", " ", "G", "W", "W", " ", "G", "G", "G", " ", "W", "W", "W", " "],
@@ -95,29 +97,29 @@ function setup() {
         ["W", " ", " ", " ", "G", " ", "W", "W", "W", "G", " ", " ", " ", " ", "W", "G"],
         [" ", " ", "G", " ", "W", " ", " ", " ", " ", " ", " ", "W", "G", " ", " ", " "],
         [" ", "G", "G", " ", "G", "W", "W", " ", "G", "W", " ", "W", "W", "W", "W", " "],
-        [" ", "W", "W", " ", " ", "W", "G", " ", " ", "G", " ", "G", "W", "W", "W", " "],
+        [" ", "W", "W", " ", " ", "W", "G", " ", "M", "G", " ", "G", "W", "W", "W", " "],
         [" ", "W", "W", "G", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " "],
         [" ", "G", "W", "W", " ", "W", " ", " ", " ", " ", " ", "G", " ", "W", "W", " "],
-        [" ", " ", " ", "W", " ", "W", "W", " ", "G", " ", " ", " ", " ", "W", " ", " "],
-        ["W", "G", " ", " ", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
+        [" ", " ", " ", "W", " ", "W", "W", " ", "G", " ", " ", " ", " ", "W", "M", " "],
+        ["W", "G", " ", "M", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
     ];
     road2 = [
-        [" ", "┘", "-", "-", "-", "┐", " ", " ", " ", "┌", "-", "T", "-", "┐", " ", " "],
-        ["┘", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", "|", " ", "L", "┐", " "],
+        [" ", "┌", "-", "-", "-", "┐", " ", " ", " ", "┌", "-", "T", "-", "┐", " ", " "],
+        ["┌", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", "|", " ", "L", "┐", " "],
         ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", "L", "┐"],
         ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-        ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", "├", " ", " ", " ", "T"],
-        ["┘", "┘", " ", "┌", "┘", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-        [" ", "┘", "-", "-", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-        [" ", " ", " ", " ", "-", "T", "-", "┘", " ", " ", " ", "|", " ", " ", " ", "┘"],
-        [" ", "┘", "-", "├", " ", "|", " ", " ", " ", " ", "┌", " ", "-", " ", " ", " "],
-        ["┘", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┤", " ", " ", " ", " ", " "],
-        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", " "],
-        ["|", " ", " ", "┘", "T", " ", " ", "L", "┐", " ", "|", " ", " ", " ", " ", " "],
-        ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", " ", " ", " ", " ", " ", " "],
-        ["|", " ", " ", " ", "|", " ", "L", "T", "┴", " ", " ", " ", " ", " ", " ", " "],
-        ["┘", "-", "T", " ", "|", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "],
-        [" ", " ", "┘", "-", "┘", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " "]
+        ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", "├", "-", "-", "-", "┤"],
+        ["L", "┐", " ", "┌", "┘", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
+        [" ", "L", "-", "┤", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
+        [" ", " ", " ", "├", "-", "T", "-", "┘", " ", " ", " ", "|", " ", "┌", "-", "┘"],
+        [" ", "┌", "-", "┤", " ", "|", " ", " ", " ", " ", "┌", "┴", "-", "┤", " ", " "],
+        ["┌", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┤", " ", " ", "L", "-", "┐"],
+        ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", "|"],
+        ["|", " ", " ", "L", "┐", " ", " ", "L", "┐", " ", "|", " ", " ", " ", " ", "|"],
+        ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", "├", "-", "T", "-", "-", "┤"],
+        ["|", " ", " ", " ", "|", " ", "L", "T", "┴", "T", "┤", " ", "|", " ", " ", "|"],
+        ["L", "-", "┐", " ", "|", " ", " ", "|", " ", "L", "┴", "-", "┤", " ", "┌", "┘"],
+        [" ", " ", "L", "-", "┘", " ", " ", "|", " ", " ", " ", " ", "L", "-", "┘", " "]
     ];
 
     map3 = [
@@ -189,9 +191,9 @@ function setup() {
     TRightRoadImage = loadImage("./assets/tRight.png");
     TLeftRoadImage = loadImage("./assets/tLeft.png");
     TTopRoadImage = loadImage("./assets/tTop.png");
-    spawnSyrups(map);
+    spawnSyrups(map, 0);
     let miniMap = document.getElementById("miniMap");
-    for (let i = 0; i < numEnemy; i++) {
+    for (let i = 0; i < 13; i++) {
         let syrup = document.createElement("div");
         syrup.style = `width:` + (window.innerWidth * .15 * .0625) + `px; height:` + (window.innerWidth * .15 * .0625) + `px; position: absolute; left:` + (mapleSyrups[i].x * window.innerWidth * .15 * .0625) + `px; top:` + (mapleSyrups[i].y * window.innerWidth * .15 * .0625) + `px; background-color: rgb(255, 255, 0);`;
         syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
@@ -201,10 +203,11 @@ function setup() {
     selectedRoad = road;
     startStopwatch();
 }
-function mousePressed() {
-    nextLevel();
-}
+// function mousePressed() {
+//     nextLevel();
+// }
 function nextLevel() {
+    currentMap++;
     selectedMap = map2;
     selectedRoad = road2;
     enemy = [];
@@ -212,9 +215,16 @@ function nextLevel() {
         document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
     }
     mapleSyrups = [];
-    player.pos = createVector(7*gridSize+gridSize/2, 7*gridSize+gridSize/2);
-    carAngle = 0;
-    spawnSyrups(selectedMap);
+    player.pos = createVector(7 * gridSize + gridSize / 2, 7 * gridSize + gridSize / 2);
+    player.carAngle = 0;
+    player.health = 1;
+    spawnSyrups(selectedMap, 6);
+    for (let i = 0; i < 6; i++) {
+        let syrup = document.createElement("div");
+        syrup.style = `width:` + (window.innerWidth * .15 * .0625) + `px; height:` + (window.innerWidth * .15 * .0625) + `px; position: absolute; left:` + (mapleSyrups[i].x * window.innerWidth * .15 * .0625) + `px; top:` + (mapleSyrups[i].y * window.innerWidth * .15 * .0625) + `px; background-color: rgb(255, 255, 0);`;
+        syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
+        miniMap.append(syrup);
+    }
 }
 function draw() {
     // if (!stopwatchString) {
@@ -247,8 +257,9 @@ function draw() {
         }
     }
     if (mapleSyrups.length == 0) {
-        // alert("You Win");
-        // noLoop();
+        if (currentMap < 1) {
+            nextLevel();
+        } else { noLoop() }
     }
     fill(255, 60, 0);
     noStroke();
@@ -614,16 +625,19 @@ class Syrup {
     }
 }
 
-function spawnSyrups(theMap) {
+function spawnSyrups(theMap, numEnemy) {
+    let countOfAddedEnemies = 0;
     for (let i = 0; i < theMap.length; i++) {
         for (let j = 0; j < theMap[0].length; j++) {
             if (theMap[i][j]) {
                 if (theMap[i][j] == "M") {
                     console.log(j, i);
                     mapleSyrups.push(new Syrup(j, i));
-                    enemy[numEnemy] = new Car();
-                    enemy[numEnemy].pos = createVector(j * gridSize + gridSize / 2, i * gridSize + gridSize / 2);
-                    numEnemy++;
+                    if (countOfAddedEnemies<numEnemy) {
+                        enemy[countOfAddedEnemies] = new Car();
+                        enemy[countOfAddedEnemies].pos = createVector(j * gridSize + gridSize / 2, i * gridSize + gridSize / 2);
+                        countOfAddedEnemies++;
+                    }
                 }
             }
         }
