@@ -206,6 +206,11 @@ function setup() {
 // function mousePressed() {
 //     nextLevel();
 // }
+function keyPressed() {
+    if(key=="m") {
+        document.getElementById("miniMap").hidden = !document.getElementById("miniMap").hidden; 
+    }
+}
 function nextLevel() {
     currentMap++;
     selectedMap = map2;

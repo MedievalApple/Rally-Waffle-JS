@@ -42,3 +42,14 @@ canvas {
     background-color: rgb(255, 112, 0);
     border-radius: 20px;
 }
+
+.score {
+    font-family: 'Bungee Spice', cursive;
+    position: absolute;
+    right: 10%;
+    top: 10%;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-position: under;
+    color: rgb(255, 102, 31);
+}
