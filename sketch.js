@@ -14,6 +14,7 @@ var carImage;
 var enemyImage;
 var grassImage;
 var selectedMap;
+var selectedRoad;
 var map = [];
 var map2 = [];
 var map3 = [];
@@ -37,6 +38,8 @@ function setup() {
     createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
     gridSize = floor(width / 8);
     player = new Car();
+    player.pos = createVector(gridSize / 2, gridSize / 2);
+    player.carAngle = PI;
     // for (let i = 0; i < numEnemy; i++) {
     //     enemy[i] = new Car();
     // }
@@ -195,27 +198,39 @@ function setup() {
         miniMap.append(syrup);
     }
     selectedMap = map;
+    selectedRoad = road;
+    startStopwatch();
 }
-// function mousePressed() {
-//     nextLevel();
-// }
-// function nextLevel() {
-//     selectedMap = map2
-// }
-function draw() {
-    if (!stopwatchString) {
-        startStopwatch();
+function mousePressed() {
+    nextLevel();
+}
+function nextLevel() {
+    selectedMap = map2;
+    selectedRoad = road2;
+    enemy = [];
+    for (let i = 0; i < mapleSyrups.length; i++) {
+        document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
     }
+    mapleSyrups = [];
+    player.pos = createVector(7*gridSize+gridSize/2, 7*gridSize+gridSize/2);
+    carAngle = 0;
+    spawnSyrups(selectedMap);
+}
+function draw() {
+    // if (!stopwatchString) {
+    //     startStopwatch();
+    // }
     background(255);
-    showRoad(road);
+    showRoad(selectedRoad);
     showMap(selectedMap);
     player.move(null, null, true);
     player.show(carImage, true);
-    for (let i = 0; i < numEnemy; i++) {
+    for (let i = 0; i < enemy.length; i++) {
         enemy[i].show(enemyImage);
         Wander(enemy[i]);
         if (enemy[i].collideOtherCar(player)) {
             // location.reload();
+            console.log("collideWithPlayer");
             clearInterval(stopwatchInterval);
         }
     }
@@ -232,8 +247,8 @@ function draw() {
         }
     }
     if (mapleSyrups.length == 0) {
-        alert("You Win");
-        noLoop();
+        // alert("You Win");
+        // noLoop();
     }
     fill(255, 60, 0);
     noStroke();
@@ -451,15 +466,15 @@ class Car {
                 this.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
             }
             if (this.pos.x > width / 2) {
-                if (this.pos.x + width / 2 > 1600) {
-                    worldPos.x = 1600 - width;
+                if (this.pos.x + width / 2 > 16 * gridSize) {
+                    worldPos.x = (16 * gridSize) - width;
                 } else {
                     worldPos.x = floor(this.pos.x - (width / 2));
                 }
             }
             if (this.pos.y > height / 2) {
-                if (this.pos.y + height / 2 > 1600) {
-                    worldPos.y = 1600 - height;
+                if (this.pos.y + height / 2 > 16 * gridSize) {
+                    worldPos.y = (16 * gridSize) - height;
                 } else {
                     worldPos.y = floor(this.pos.y - (height / 2));
                 }
