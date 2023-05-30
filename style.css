@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: rgb(43, 43, 43);
-    height: 100%;
+    /* height: 100%; */
 }
 
 h1 {
@@ -52,4 +52,8 @@ canvas {
     text-decoration-thickness: 3px;
     text-underline-position: under;
     color: rgb(255, 102, 31);
+}
+
+.center {
+    text-align: center;
 }

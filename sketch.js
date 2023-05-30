@@ -33,10 +33,13 @@ var TRoadImage;
 var TRightRoadImage;
 var TLeftRoadImage;
 var TTopRoadImage;
+var intersectionImage;
 var stopwatchString;
 var collectedSyrups = 0;
 var currentLevel = 0;
 var levels = [];
+var mapleImage;
+var playerName = localStorage.getItem("username");
 function setup() {
     createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
     gridSize = floor(width / 8);
@@ -136,43 +139,50 @@ function setup() {
 
     levels[2] = {
         "map": [
-            ["W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W"],
-            ["G", "S", " ", "G", " ", " ", "G", "W", "W", "G", " ", " ", "G", " ", " ", "G"],
-            ["G", " ", " ", " ", " ", " ", "G", "W", "W", "G", " ", " ", " ", " ", " ", "G"],
-            ["W", "G", "G", "W", " ", " ", "W", "G", "G", "W", "G", " ", "W", "G", "G", "W"],
-            ["G", "G", "G", "G", " ", " ", "G", "G", "G", "G", " ", " ", "G", "W", "W", "G"],
-            ["G", "G", "G", "G", " ", " ", "G", "G", "G", "G", " ", " ", "G", "W", "W", "G"],
-            ["W", "G", "G", "W", " ", " ", "W", "G", "G", "W", " ", " ", "W", "G", "G", "W"],
-            ["G", " ", " ", " ", " ", " ", "G", "W", "W", "G", " ", " ", " ", " ", " ", "G"],
-            ["G", " ", " ", "G", " ", " ", "G", "W", "W", "G", " ", " ", " ", " ", " ", "G"],
-            ["W", "G", "G", "W", "G", " ", "W", "G", "G", "W", "G", "G", "W", " ", "G", "W"],
-            ["G", " ", " ", "G", " ", " ", " ", " ", " ", "G", "G", "G", "G", " ", " ", "G"],
-            ["G", " ", " ", " ", " ", " ", " ", " ", " ", "G", "G", "G", "G", " ", " ", "G"],
-            ["W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W"],
-            ["G", "G", "G", "G", "W", "W", "G", "G", "G", "G", "W", "W", "G", "W", "W", "G"],
-            ["G", "G", "G", "G", "W", "W", "G", "G", "G", "G", "W", "W", "G", "W", "W", "G"],
-            ["W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W", "G", "G", "W"]
+            ["W", "S", " ", " ", " ", " ", "G", "M", " ", " ", "W", "M", " ", " ", " ", " "],
+            ["W", " ", "W", "G", "W", " ", "W", " ", "W", " ", "W", "W", "W", " ", "W", " "],
+            ["W", " ", " ", "M", "W", " ", "W", " ", "W", "M", " ", " ", " ", " ", "W", " "],
+            ["W", " ", "W", "W", "W", " ", "W", " ", "W", "W", "W", " ", "W", " ", "W", " "],
+            ["W", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "W", " ", "W", " "],
+            ["W", "W", "W", " ", "W", "W", "W", " ", "W", " ", "W", "W", "W", "W", "W", " "],
+            ["W", " ", " ", "M", " ", " ", "W", " ", "W", "M", " ", " ", " ", " ", "W", " "],
+            ["W", " ", "W", " ", "W", " ", "W", " ", "W", "W", "W", " ", "W", " ", "W", " "],
+            ["W", " ", "W", "M", "W", "M", "W", " ", " ", " ", " ", " ", "W", " ", " ", "M"],
+            ["W", " ", "W", "W", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", "W"],
+            ["G", " ", " ", " ", " ", "M", "W", " ", "W", "M", "w", " ", " ", " ", " ", " "],
+            ["G", "W", "W", " ", "W", "W", "W", " ", "W", "W", "W", " ", "W", "W", "W", " "],
+            ["G", "M", "W", " ", "W", " ", " ", " ", "W", " ", " ", " ", " ", " ", "W", " "],
+            ["W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "w", " "],
+            ["W", " ", " ", " ", " ", " ", "W", "M", " ", " ", "W", "M", "W", " ", " ", "M"],
+            ["W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "W", "W", "W", "W"]
         ],
-        
+        "road": [
+            [" ", "┌", "-", "-", "-", "┐", " ", "┌", "-", "┐", " ", "┌", "-", "T", "-", "┐"],
+            [" ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|"],
+            [" ", "├", "-", "-", " ", "|", " ", "|", " ", "├", "-", "+", "-", "┤", " ", "|"],
+            [" ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|"],
+            [" ", "L", "-", "T", "-", "┴", "-", "+", "-", "+", "-", "┤", " ", "|", " ", "|"],
+            [" ", " ", " ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", " ", " ", "|"],
+            [" ", "┌", "-", "+", "-", "┐", " ", "|", " ", "L", "-", "+", "-", "┐", " ", "|"],
+            [" ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|"],
+            [" ", "|", " ", "|", " ", "|", " ", "├", "-", "+", "-", "┤", " ", "├", "-", "┘"],
+            [" ", "|", " ", " ", " ", " ", " ", "|", " ", "|", " ", "|", " ", "|", " ", " "],
+            [" ", "L", "-", "T", "-", "-", " ", "|", " ", "|", " ", "L", "-", "┴", "-", "┐"],
+            [" ", " ", " ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", " ", " ", "|"],
+            [" ", "|", " ", "|", " ", "┌", "-", "┤", " ", "├", "-", "+", "-", "┐", " ", "|"],
+            [" ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|"],
+            [" ", "L", "-", "┴", "-", "┘", " ", "L", "-", "┘", " ", "|", " ", "L", "-", "┘"],
+            [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
+        ],
+        "maples": 15,
+        "enemies": 8,
+        "start": createVector(1, 0),
+        "direction": PI
+
     }
 
     map4 = [
-        ["S", " ", " ", " ", " ", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " "],
-        [" ", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", "G", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " "],
-        ["G", "G", "G", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", "W", "W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", " "],
-        [" ", " ", " ", " ", " ", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " "],
-        [" ", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " "],
-        [" ", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-        ["W", "W", "W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "W", "W", "W", " "],
-        ["W", " ", "W", " ", "W", " ", " ", " ", "W", " ", " ", " ", " ", " ", "W", " "],
-        ["W", " ", "W", " ", "w", " ", "W", " ", "W", " ", "W", " ", "W", " ", "w", " "],
-        ["W", " ", " ", " ", " ", " ", "W", " ", " ", " ", " ", " ", "W", " ", " ", " "],
-        ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", " ", "W", "E"]
+
     ];
 
     map5 = [
@@ -206,6 +216,8 @@ function setup() {
     TRightRoadImage = loadImage("./assets/tRight.png");
     TLeftRoadImage = loadImage("./assets/tLeft.png");
     TTopRoadImage = loadImage("./assets/tTop.png");
+    mapleImage = loadImage("./assets/maple.png");
+    intersectionImage = loadImage("./assets/4way.png");
     spawnSyrups(levels[0].map, 0);
     let miniMap = document.getElementById("miniMap");
     for (let i = 0; i < 13; i++) {
@@ -219,9 +231,9 @@ function setup() {
     startStopwatch();
 }
 
-function mousePressed() {
-    nextLevel();
-}
+// function mousePressed() {
+//     nextLevel();
+// }
 
 function keyPressed() {
     if (key == "m") {
@@ -230,10 +242,15 @@ function keyPressed() {
 }
 function nextLevel() {
     currentLevel++;
+    worldPos = createVector(0, 0);
     if (currentLevel == levels.length) {
         alert("you win");
         currentLevel = -1;
-        worldPos = createVector(0, 0);
+        let score = document.createElement("p");
+        score.innerText = playerName + ": " + stopwatchString;
+        document.getElementById("score").append(score);
+        clearInterval(stopwatchInterval);
+        startStopwatch();
         nextLevel();
         return;
     }
@@ -295,9 +312,7 @@ function draw() {
         }
     }
     if (mapleSyrups.length == 0) {
-        if (currentMap < 1) {
-            nextLevel();
-        } else { noLoop() }
+        nextLevel();
     }
     fill(255, 60, 0);
     noStroke();
@@ -399,6 +414,13 @@ function showRoad(theRoad) {
                     image(cornerDownRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
                     //image(straigtRoadImage, 0,0);
                     cornerDownRoadImage.resizeNN(gridSize, gridSize);
+                    pop();
+                } else if (theRoad[i][j] == "+") {
+                    push();
+                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
+                    image(intersectionImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+                    //image(straigtRoadImage, 0,0);
+                    intersectionImage.resizeNN(gridSize, gridSize);
                     pop();
                 }
             }
@@ -650,8 +672,12 @@ class Syrup {
     }
     show() {
         fill(255, 255, 0);
-        noStroke();
-        circle(this.x * gridSize - worldPos.x + gridSize / 2, this.y * gridSize - worldPos.y + gridSize / 2, 15);
+        push();
+        translate(this.x * gridSize - worldPos.x + gridSize / 2, this.y * gridSize - worldPos.y + gridSize / 2);
+        image(mapleImage, -gridSize / 4, -gridSize / 4, gridSize / 2, gridSize / 2);
+        mapleImage.resizeNN(gridSize / 2, gridSize / 2);
+        pop();
+
     }
     collide() {
         var boardPos = (player.pos.copy()).mult(1 / gridSize);
@@ -715,27 +741,47 @@ function Wander(ai) {
         ai.prevAiPos.x = aiPos.x;
         ai.prevAiPos.y = aiPos.y;
         var avaibleDirections = [];
-        if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G") {
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "M") {
             avaibleDirections.push("left");
             // ai.move(createVector(0, -2), -PI / 2, false);
         }
-        if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "G") {
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "M") {
             avaibleDirections.push("right");
             // ai.move(createVector(0, -2), -PI / 2, false);
         }
         if (withInBounds(floor(aiPos.y - 1), floor(aiPos.x))) {
-            if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G") {
+            if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G" || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "M") {
                 avaibleDirections.push("top");
                 // ai.move(createVector(0, -2), -PI / 2, false);
             }
         }
         if (withInBounds(floor(aiPos.y + 1), floor(aiPos.x))) {
-            if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G") {
+            if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G" || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "M") {
                 avaibleDirections.push("bottom");
-                // ai.move(createVector(0, -2), -PI / 2, false);
+            }
+        }
+        if (avaibleDirections.length > 1) {
+            for (let i = 0; i < avaibleDirections.length; i++) {
+                if (ai.aiMovingDirection == "left") {
+                    if (avaibleDirections[i] == "right")
+                        avaibleDirections.splice(i, 1);
+                }
+                if (ai.aiMovingDirection == "right") {
+                    if (avaibleDirections[i] == "left")
+                        avaibleDirections.splice(i, 1);
+                }
+                if (ai.aiMovingDirection == "top") {
+                    if (avaibleDirections[i] == "bottom")
+                        avaibleDirections.splice(i, 1);
+                }
+                if (ai.aiMovingDirection == "bottom") {
+                    if (avaibleDirections[i] == "top")
+                        avaibleDirections.splice(i, 1);
+                }
             }
         }
         ai.aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
+
         switch (ai.aiMovingDirection) {
             case "left":
                 ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
