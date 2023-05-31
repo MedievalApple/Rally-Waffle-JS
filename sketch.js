@@ -281,47 +281,53 @@ function restartCurrentLevel() {
     nextLevel();
 }
 function draw() {
-    // if (!stopwatchString) {
-    //     startStopwatch();
-    // }
-    background(255);
-    showRoad(selectedRoad);
-    showMap(selectedMap);
-    player.move(null, null, true);
-    player.show(carImage, true);
-    for (let i = 0; i < enemy.length; i++) {
-        enemy[i].show(enemyImage);
-        Wander(enemy[i]);
-        if (enemy[i].collideOtherCar(player)) {
-            // location.reload();
-            restartCurrentLevel();
-            console.log("collideWithPlayer");
-            //clearInterval(stopwatchInterval);
+    if (localStorage.getItem("username") == "") {
+        window.location.replace("index.html");
+    } else {
+        // if (!stopwatchString) {
+        //     startStopwatch();
+        // }
+        background(255);
+        showRoad(selectedRoad);
+        showMap(selectedMap);
+        player.move(null, null, true);
+        player.show(carImage, true);
+        for (let i = 0; i < enemy.length; i++) {
+            enemy[i].show(enemyImage);
+            Wander(enemy[i]);
+            if (enemy[i].collideOtherCar(player)) {
+                // location.reload();
+                restartCurrentLevel();
+                console.log("collideWithPlayer");
+                //clearInterval(stopwatchInterval);
+            }
         }
-    }
-    let carHTML = document.getElementById("car");
-    carHTML.style.left = (floor(player.pos.x / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
-    carHTML.style.top = (floor(player.pos.y / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
-    for (let i = 0; i < mapleSyrups.length; i++) {
-        mapleSyrups[i].show();
-        if (mapleSyrups[i].collide()) {
-            document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
-            mapleSyrups.splice(i, 1);
-            player.health = 1;
-            collectedSyrups++;
+        let carHTML = document.getElementById("car");
+        carHTML.style.left = (floor(player.pos.x / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
+        carHTML.style.top = (floor(player.pos.y / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
+        for (let i = 0; i < mapleSyrups.length; i++) {
+            mapleSyrups[i].show();
+            if (mapleSyrups[i].collide()) {
+                document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
+                mapleSyrups.splice(i, 1);
+                player.health = 1;
+                collectedSyrups++;
+            }
         }
+        if (mapleSyrups.length == 0) {
+            nextLevel();
+        }
+        fill(255, 60, 0);
+        noStroke();
+        rect(width - 90, 5, 85, 20, 5);
+        fill(255);
+        textSize(15);
+        fill(255, 255, 255);
+        text(localStorage.getItem("username"), width - 45, 20)
+        text(stopwatchString, width - 65, 20);
+        fill(255, 255, 0);
+        text(collectedSyrups, width - 85, 20);
     }
-    if (mapleSyrups.length == 0) {
-        nextLevel();
-    }
-    fill(255, 60, 0);
-    noStroke();
-    rect(width - 90, 5, 85, 20, 5);
-    fill(255);
-    textSize(15);
-    text(stopwatchString, width - 65, 20);
-    fill(255, 255, 0);
-    text(collectedSyrups, width - 85, 20);
 }
 function showMap(theMap) {
     for (let i = 0; i < theMap.length; i++) {
