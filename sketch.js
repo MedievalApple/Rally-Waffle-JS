@@ -44,8 +44,22 @@ function setup() {
     if (localStorage.getItem("username") == "" || localStorage.getItem("username") == undefined || localStorage.getItem("username") == null) {
         window.location.replace("index.html");
     } else {
-        createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
+
+        var canvas = createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
+        canvas.id("game");
         gridSize = floor(width / 8);
+
+        joy = " ";
+
+        if(navigator.userAgent.toLowerCase().match(/mobile/i)) {
+            console.log("Is Mobile");
+            joy = new JoyStick('joyDiv');
+            //document.getElementById("joyDiv").hidden = false;
+        }else{
+            console.log("I Not Mobile");
+            //document.getElementById("joyDiv").hidden = true;
+        }
+
         player = new Car();
         player.pos = createVector(gridSize / 2, gridSize / 2);
         player.carAngle = PI;
@@ -236,7 +250,7 @@ function setup() {
 }
 
 function mousePressed() {
-    nextLevel();
+    //nextLevel();
 }
 //yay
 function keyPressed() {
@@ -289,7 +303,7 @@ function draw() {
     background(255);
     showRoad(selectedRoad);
     showMap(selectedMap);
-    player.move(null, null, true);
+    player.move(null, null, true, joy);
     player.show(carImage, true);
     for (let i = 0; i < enemy.length; i++) {
         enemy[i].show(enemyImage);
@@ -486,7 +500,7 @@ function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
     if (!ai.prevAiPos) {
         ai.prevAiPos = aiPos.copy();
-        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
+        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false, joy);
     }
     if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1) && ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {

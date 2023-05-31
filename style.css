@@ -12,7 +12,7 @@ h1 {
     text-align: center;
 }
 
-canvas {
+#game {
     padding: 0;
     margin: auto;
     display: block;
@@ -39,6 +39,12 @@ canvas {
     text-align: center;
     width: 26vw;
     font-size: 1vw;
+}
+
+#joyDiv {
+    width: 15vw;
+    height: 15vw;
+    margin-left: 5vw;
 }
 
 .square {
