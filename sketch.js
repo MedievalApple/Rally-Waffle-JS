@@ -241,7 +241,7 @@ function mousePressed() {
 //yay
 function keyPressed() {
     if (key == "m") {
-        document.getElementById("miniMap").hidden = !document.getElementById("miniMap").hidden;
+        document.getElementById("miniMapDiv").hidden = !document.getElementById("miniMapDiv").hidden;
     }
 }
 function nextLevel() {
@@ -250,10 +250,7 @@ function nextLevel() {
     if (currentLevel == levels.length) {
         alert("you win");
         currentLevel = -1;
-        let score = document.createElement("p");
-        score.innerText = playerName + ": " + stopwatchString;
-        score.className = "scoreItem";
-        document.getElementById("score").append(score);
+        addScore(playerName, stopwatchString);
         clearInterval(stopwatchInterval);
         startStopwatch();
         nextLevel();

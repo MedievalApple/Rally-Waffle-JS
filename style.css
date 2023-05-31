@@ -28,7 +28,17 @@ canvas {
     position: relative;
     width: 15vw;
     height: 15vw;
+    margin-left: 5vw;
     background-color: rgb(167, 167, 167);
+    border: 5px solid black;
+    font-family: 'Bungee Spice', cursive;
+}
+
+.mapText {
+    font-family: 'Bungee Spice', cursive;
+    text-align: center;
+    width: 26vw;
+    font-size: 1vw;
 }
 
 .square {
@@ -48,7 +58,7 @@ canvas {
     text-decoration: underline;
     text-decoration-thickness: 3px;
     text-underline-position: under;
-    color: rgb(255, 102, 31);
+    color: #cb1000;
     font-size: 1vw;
 }
 
@@ -91,4 +101,13 @@ input[type=text] {
     text-decoration: none;
     font-size: 0.8vw;
     text-align: center;
+}
+
+footer {
+    font-family: 'Bungee Spice', cursive;
+    text-align: center;
+    font-size: 1.5vw;
+    width: 100%;
+    bottom: 0;
+    position: fixed;
 }
