@@ -45,16 +45,14 @@ canvas {
 
 .score {
     font-family: 'Bungee Spice', cursive;
-    position: absolute;
-    right: 10%;
-    top: 10%;
     text-decoration: underline;
     text-decoration-thickness: 3px;
     text-underline-position: under;
     color: rgb(255, 102, 31);
+    font-size: 1vw;
 }
 
-.login{
+.login {
     text-align: center;
     font-family: 'Bungee Spice', cursive;
     margin: 0;
@@ -85,5 +83,12 @@ input[type=text] {
     background-color: #1a1a1a;
     box-sizing: border-box;
     font-family: 'Bungee Spice', cursive;
+    text-align: center;
+}
+
+.scoreItem {
+    font-family: 'Bungee Spice', cursive;
+    text-decoration: none;
+    font-size: 0.8vw;
     text-align: center;
 }
