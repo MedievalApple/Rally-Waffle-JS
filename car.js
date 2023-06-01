@@ -40,23 +40,12 @@ class Car {
             if (this.health < 0) {
                 this.health = 0;
                 alert("You Failed");
-                location.reload();
+                restartCurrentLevel();
             }
             rect(-this.w / 2, -50, this.w * this.health, 8, 10);
         }
         pop();
         stroke(255, 0, 0);
-        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
-        corners[0].add(this.pos);
-
-        corners[1] = createVector(this.w / 2, -this.h / 2).rotate(this.carAngle);
-        corners[1].add(this.pos);
-
-        corners[2] = createVector(-this.w / 2, this.h / 2).rotate(this.carAngle);
-        corners[2].add(this.pos);
-
-        corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
-        corners[3].add(this.pos);
     }
     move(vel, angle, isAI) {
         if (isAI) {
