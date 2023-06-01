@@ -10,6 +10,7 @@ class Car {
         //This is for enemies
         this.aiMovingDirection;
         this.prevAiPos;
+        this.pointOfCollision;
     }
     show(theImage, UI) {
         push();
@@ -46,18 +47,23 @@ class Car {
         }
         pop();
         stroke(255, 0, 0);
+        strokeWeight(5);
+        if (this.pointOfCollision) {
+            console.log((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y);
+            point((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y)
+        }
     }
     move(vel, angle, isAI, joy) {
         var joystick = "";
         if (isAI) {
-            if(joy != " "){
+            if (joy != " ") {
                 joystick = joy.GetDir();
             }
             if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.health -= 0.001;
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, -(1.5*gridSize / 100));
+                    this.vel = createVector(0, -(1.5 * gridSize / 100));
                 } else {
                     this.vel = createVector(0, -(4 * gridSize / 100));
                 }
@@ -66,7 +72,7 @@ class Car {
                 this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, (1.5*gridSize / 100));
+                    this.vel = createVector(0, (1.5 * gridSize / 100));
                 } else {
                     this.vel = createVector(0, (4 * gridSize / 100));
                 }
@@ -120,6 +126,7 @@ class Car {
         return false;
     }
     collide() {
+        this.pointOfCollision = this.findCollisionPoint();
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
         corners[0].add(this.pos);
         corners[0].mult(1 / gridSize);
@@ -220,4 +227,46 @@ class Car {
         }
         return false;
     }
+    findCollisionPoint() {
+        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[0].add(this.pos);
+        corners[0].mult(1 / gridSize);
+
+        corners[1] = createVector(this.w / 2, -this.h / 2).rotate(this.carAngle);
+        corners[1].add(this.pos);
+        corners[1].mult(1 / gridSize);
+
+        corners[2] = createVector(-this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[2].add(this.pos);
+        corners[2].mult(1 / gridSize);
+
+        corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
+        corners[3].add(this.pos);
+        corners[3].mult(1 / gridSize);
+        for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return;
+            if (selectedMap[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
+                return createVector(lerp(corners[0].x, corners[1].x, t), lerp(corners[0].y, corners[1].y, t));
+            }
+        }
+        for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return;
+            if (selectedMap[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
+                return createVector(lerp(corners[2].x, corners[3].x, t), lerp(corners[2].y, corners[3].y, t));
+            }
+        }
+        for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[1].y, corners[3].y, t)), floor(lerp(corners[1].x, corners[3].x, t)))) return;
+            if (selectedMap[floor(lerp(corners[1].y, corners[3].y, t))][floor(lerp(corners[1].x, corners[3].x, t))] == "W") {
+                return createVector(lerp(corners[1].x, corners[3].x, t), lerp(corners[1].y, corners[3].y, t));
+            }
+        }
+        for (let t = 0; t < 1; t += 0.1) {
+            if (!withInBounds(floor(lerp(corners[2].y, corners[0].y, t)), floor(lerp(corners[2].x, corners[0].x, t)))) return;
+            if (selectedMap[floor(lerp(corners[2].y, corners[0].y, t))][floor(lerp(corners[2].x, corners[0].x, t))] == "W") {
+                return createVector(lerp(corners[2].x, corners[0].x, t), lerp(corners[2].y, corners[0].y, t));
+            }
+        }
+    }
+
 }
