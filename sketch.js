@@ -233,6 +233,7 @@ function setup() {
         TRightRoadImage = loadImage("./assets/tRight.png");
         TLeftRoadImage = loadImage("./assets/tLeft.png");
         TTopRoadImage = loadImage("./assets/tTop.png");
+        cityImage = loadImage("./assets/cityBW.png");
         mapleImage = loadImage("./assets/maple.png");
         intersectionImage = loadImage("./assets/4way.png");
         spawnSyrups(levels[0].map, 0);
@@ -349,7 +350,8 @@ function showMap(theMap) {
                 if (theMap[i][j] == "W") {
                     fill(151);
                     noStroke();
-                    rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    image(cityImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    cityImage.resizeNN(gridSize, gridSize);
                 } else if (theMap[i][j] == "G") {
                     fill(0, 177, 0);
                     noStroke();
