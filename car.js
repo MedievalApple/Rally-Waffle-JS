@@ -47,9 +47,13 @@ class Car {
         pop();
         stroke(255, 0, 0);
     }
-    move(vel, angle, isAI) {
+    move(vel, angle, isAI, joy) {
+        var joystick = "";
         if (isAI) {
-            if (keyIsDown(87)) { // w key
+            if(joy != " "){
+                joystick = joy.GetDir();
+            }
+            if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.health -= 0.001;
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -58,7 +62,7 @@ class Car {
                     this.vel = createVector(0, -(4 * gridSize / 100));
                 }
             }
-            else if (keyIsDown(83)) { // s key
+            else if (keyIsDown(83) || joystick == "S" || joystick == "SE" || joystick == "SW") { // s key
                 this.health -= 0.001;
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -69,13 +73,13 @@ class Car {
             } else {
                 this.vel = createVector(0, 0);
             }
-            if (keyIsDown(65)) { // a key
+            if (keyIsDown(65) || joystick == "W" || joystick == "NW" || joystick == "SE") { // a key
                 this.carAngle -= PI / 120;
                 if (this.collide()) {
                     this.carAngle += PI / 120;
                 }
             }
-            if (keyIsDown(68)) { // d key
+            if (keyIsDown(68) || joystick == "E" || joystick == "NE" || joystick == "SW") { // d key
                 this.carAngle += PI / 120;
                 if (this.collide()) {
                     this.carAngle -= PI / 120;

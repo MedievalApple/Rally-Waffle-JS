@@ -44,8 +44,22 @@ function setup() {
     if (localStorage.getItem("username") == "" || localStorage.getItem("username") == undefined || localStorage.getItem("username") == null) {
         window.location.replace("index.html");
     } else {
-        createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
+
+        var canvas = createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
+        canvas.id("game");
         gridSize = floor(width / 8);
+
+        joy = " ";
+
+        if(navigator.userAgent.toLowerCase().match(/mobile/i)) {
+            console.log("Is Mobile");
+            joy = new JoyStick('joyDiv');
+            //document.getElementById("joyDiv").hidden = false;
+        }else{
+            console.log("I Not Mobile");
+            //document.getElementById("joyDiv").hidden = true;
+        }
+
         player = new Car();
         player.pos = createVector(gridSize / 2, gridSize / 2);
         player.carAngle = PI;
@@ -219,6 +233,7 @@ function setup() {
         TRightRoadImage = loadImage("./assets/tRight.png");
         TLeftRoadImage = loadImage("./assets/tLeft.png");
         TTopRoadImage = loadImage("./assets/tTop.png");
+        cityImage = loadImage("./assets/cityBW.png");
         mapleImage = loadImage("./assets/maple.png");
         intersectionImage = loadImage("./assets/4way.png");
         spawnSyrups(levels[0].map, 0);
@@ -236,12 +251,12 @@ function setup() {
 }
 
 function mousePressed() {
-    nextLevel();
+    //nextLevel();
 }
 //yay
 function keyPressed() {
     if (key == "m") {
-        document.getElementById("miniMap").hidden = !document.getElementById("miniMap").hidden;
+        document.getElementById("miniMapDiv").hidden = !document.getElementById("miniMapDiv").hidden;
     }
 }
 function nextLevel() {
@@ -250,10 +265,7 @@ function nextLevel() {
     if (currentLevel == levels.length) {
         alert("you win");
         currentLevel = -1;
-        let score = document.createElement("p");
-        score.innerText = playerName + ": " + stopwatchString;
-        score.className = "scoreItem";
-        document.getElementById("score").append(score);
+        addScore(playerName, stopwatchString);
         clearInterval(stopwatchInterval);
         startStopwatch();
         nextLevel();
@@ -292,7 +304,7 @@ function draw() {
     background(255);
     showRoad(selectedRoad);
     showMap(selectedMap);
-    player.move(null, null, true);
+    player.move(null, null, true, joy);
     player.show(carImage, true);
     for (let i = 0; i < enemy.length; i++) {
         enemy[i].show(enemyImage);
@@ -338,7 +350,8 @@ function showMap(theMap) {
                 if (theMap[i][j] == "W") {
                     fill(151);
                     noStroke();
-                    rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    image(cityImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
+                    cityImage.resizeNN(gridSize, gridSize);
                 } else if (theMap[i][j] == "G") {
                     fill(0, 177, 0);
                     noStroke();
@@ -489,7 +502,7 @@ function Wander(ai) {
     var aiPos = (ai.pos.copy()).mult(1 / gridSize);
     if (!ai.prevAiPos) {
         ai.prevAiPos = aiPos.copy();
-        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
+        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false, joy);
     }
     if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1) && ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {
