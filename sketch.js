@@ -251,7 +251,7 @@ function setup() {
 }
 
 function mousePressed() {
-    nextLevel();
+    //nextLevel();
 }
 //yay
 function keyPressed() {
