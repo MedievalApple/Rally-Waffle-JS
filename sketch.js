@@ -44,6 +44,7 @@ function setup() {
     if (localStorage.getItem("username") == "" || localStorage.getItem("username") == undefined || localStorage.getItem("username") == null) {
         window.location.replace("index.html");
     } else {
+        console.log(playerName);
 
         var canvas = createCanvas(floor(window.innerWidth / 2.5), floor((window.innerWidth / 2.5)));
         canvas.id("game");
@@ -196,7 +197,7 @@ function setup() {
             "start": createVector(0, 0),
             "direction": PI
         };
-        
+
         levels[3] = {
             "map": [
                 ["W", "S", " ", " ", " ", " ", "G", "M", " ", " ", " ", "M", " ", " ", " ", " "],
@@ -259,7 +260,13 @@ function setup() {
             ["W", "W", "W", "W", "L", "L", "T", "T", "L", "T", "L", "L", "W", "W", "W", "W"],
             ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"]
         ];
+
         carImage = loadImage("./assets/player.png");
+
+        if (playerName.toLowerCase() == "uwu") {
+            UWUmode();
+        }
+
         enemyImage = loadImage("./assets/enmeny.png");
         grassImage = loadImage("./assets/grass.png");
         straigtRoadImage = loadImage("./assets/stright.png");
@@ -279,7 +286,7 @@ function setup() {
         let miniMap = document.getElementById("miniMap");
         for (let i = 0; i < 13; i++) {
             let syrup = document.createElement("div");
-            syrup.style = `width:` + (window.innerWidth * .15 * .0625) + `px; height:` + (window.innerWidth * .15 * .0625) + `px; position: absolute; left:` + (mapleSyrups[i].x * window.innerWidth * .15 * .0625) + `px; top:` + (mapleSyrups[i].y * window.innerWidth * .15 * .0625) + `px; background-color: rgb(255, 255, 0);`;
+            syrup.style = `width: 6.25%; height: 6.25%; position: absolute; left:` + (mapleSyrups[i].x * 6.25) + `%; top:` + (mapleSyrups[i].y * 6.25) + `%; background-color: rgb(255, 255, 0);`;
             syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
             miniMap.append(syrup);
         }
@@ -530,10 +537,8 @@ function spawnSyrups(theMap, numEnemy) {
     }
 }
 //Switches Player Sprite To UWU
-function UWUmode(uwu) {
-    if (uwu == "uwu" || uwu == "UWU") {
-        carImage = loadImage("./assets/player_UWU.png");
-    }
+function UWUmode() {
+    carImage = loadImage("./assets/player_UWU.png");
 }
 
 //AI
