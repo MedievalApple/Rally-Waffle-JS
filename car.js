@@ -49,7 +49,7 @@ class Car {
         stroke(255, 0, 0);
         strokeWeight(5);
         if (this.pointOfCollision) {
-            console.log((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y);
+            // console.log((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y);
             point((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y)
         }
     }
@@ -83,17 +83,20 @@ class Car {
                 this.carAngle -= PI / 120;
                 if (this.collide()) {
                     this.carAngle += PI / 120;
+                    this.simulateImpulse(this.pointOfCollision);
                 }
             }
             if (keyIsDown(68) || joystick == "E" || joystick == "NE" || joystick == "SW") { // d key
                 this.carAngle += PI / 120;
                 if (this.collide()) {
                     this.carAngle -= PI / 120;
+                    this.simulateImpulse(this.pointOfCollision);
                 }
             }
             this.pos.add(this.vel.rotate(this.carAngle));
             if (this.collide()) {
                 this.pos.sub(this.vel);
+                this.simulateImpulse(this.pointOfCollision);
             }
             if (keyIsDown(88)) { // x key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
@@ -148,14 +151,14 @@ class Car {
                 let angle1 = atan(v1.y / v1.x);
                 let v2 = (corners[2].copy().sub(corners[0])).mult(gridSize);
                 let angle2 = atan(v2.y / v2.x);
-                if (angle2 < 0) {
-                    angle2 += PI;
-                }
-                if (angle1 < angle2) {
-                    this.carAngle += PI / 120;
-                } else {
-                    this.carAngle -= PI / 120;
-                }
+                // if (angle2 < 0) {
+                //     angle2 += PI;
+                // }
+                // if (angle1 < angle2) {
+                //     this.carAngle += PI / 120;
+                // } else {
+                //     this.carAngle -= PI / 120;
+                // }
                 return true;
             }
         }
@@ -165,14 +168,14 @@ class Car {
                 let v2 = (corners[3].copy().sub(corners[1])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
                 let angle2 = atan(v2.y / v2.x);
-                if (angle2 < 0) {
-                    angle2 += PI;
-                }
-                if (angle1 < angle2) {
-                    this.carAngle -= PI / 120;
-                } else {
-                    this.carAngle += PI / 120;
-                }
+                // if (angle2 < 0) {
+                //     angle2 += PI;
+                // }
+                // if (angle1 < angle2) {
+                //     this.carAngle -= PI / 120;
+                // } else {
+                //     this.carAngle += PI / 120;
+                // }
                 return true;
             }
         }
@@ -182,14 +185,14 @@ class Car {
                 let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
                 let angle2 = atan(v2.y / v2.x);
-                if (angle2 < 0) {
-                    angle2 += PI;
-                }
-                if (angle1 < angle2) {
-                    this.carAngle += PI / 120;
-                } else {
-                    this.carAngle -= PI / 120;
-                }
+                // if (angle2 < 0) {
+                //     angle2 += PI;
+                // }
+                // if (angle1 < angle2) {
+                //     this.carAngle += PI / 120;
+                // } else {
+                //     this.carAngle -= PI / 120;
+                // }
                 return true;
             }
         }
@@ -199,17 +202,17 @@ class Car {
                 let v2 = (corners[2].copy().sub(corners[3])).mult(gridSize);
                 let angle1 = atan(v1.y / v1.x);
                 let angle2 = atan(v2.y / v2.x);
-                if (angle2 < 0) {
-                    angle2 += PI;
-                }
-                if (angle1 < 0) {
-                    angle1 += PI;
-                }
-                if (angle1 < angle2) {
-                    this.carAngle -= PI / 120;
-                } else {
-                    this.carAngle += PI / 120;
-                }
+                // if (angle2 < 0) {
+                //     angle2 += PI;
+                // }
+                // if (angle1 < 0) {
+                //     angle1 += PI;
+                // }
+                // if (angle1 < angle2) {
+                //     this.carAngle -= PI / 120;
+                // } else {
+                //     this.carAngle += PI / 120;
+                // }
                 return true;
             }
         }
@@ -244,29 +247,44 @@ class Car {
         corners[3].add(this.pos);
         corners[3].mult(1 / gridSize);
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return;
+            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return createVector(lerp(corners[0].x, corners[1].x, t), lerp(corners[0].y, corners[1].y, t));;
             if (selectedMap[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
                 return createVector(lerp(corners[0].x, corners[1].x, t), lerp(corners[0].y, corners[1].y, t));
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return;
+            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return createVector(lerp(corners[2].x, corners[3].x, t), lerp(corners[2].y, corners[3].y, t));
             if (selectedMap[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
                 return createVector(lerp(corners[2].x, corners[3].x, t), lerp(corners[2].y, corners[3].y, t));
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[1].y, corners[3].y, t)), floor(lerp(corners[1].x, corners[3].x, t)))) return;
+            if (!withInBounds(floor(lerp(corners[1].y, corners[3].y, t)), floor(lerp(corners[1].x, corners[3].x, t)))) return createVector(lerp(corners[1].x, corners[3].x, t), lerp(corners[1].y, corners[3].y, t));
             if (selectedMap[floor(lerp(corners[1].y, corners[3].y, t))][floor(lerp(corners[1].x, corners[3].x, t))] == "W") {
                 return createVector(lerp(corners[1].x, corners[3].x, t), lerp(corners[1].y, corners[3].y, t));
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[2].y, corners[0].y, t)), floor(lerp(corners[2].x, corners[0].x, t)))) return;
+            if (!withInBounds(floor(lerp(corners[2].y, corners[0].y, t)), floor(lerp(corners[2].x, corners[0].x, t)))) return createVector(lerp(corners[2].x, corners[0].x, t), lerp(corners[2].y, corners[0].y, t));
             if (selectedMap[floor(lerp(corners[2].y, corners[0].y, t))][floor(lerp(corners[2].x, corners[0].x, t))] == "W") {
                 return createVector(lerp(corners[2].x, corners[0].x, t), lerp(corners[2].y, corners[0].y, t));
             }
         }
+    }
+    simulateImpulse(point) {
+        this.carAngle %= 2 * PI;
+        let delta = point.copy().sub(this.pos).rotate(this.carAngle);
+        let collisionAngle = atan2(delta.x, delta.y);
+        this.collisionAngle %= PI / 2
+        let angleDiff = collisionAngle - this.carAngle;
+        let newCarVel = this.vel.copy().mult(cos(angleDiff));
+        let deltaAngle = sin(angleDiff);
+        this.pos.add(newCarVel);
+        if(this.collide()) {
+            this.pos.sub(newCarVel);
+        }
+        this.carAngle -= deltaAngle * 0.1;
+        //console.log(deltaAngle);
     }
 
 }
