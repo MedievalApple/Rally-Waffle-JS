@@ -55,42 +55,50 @@ class Car {
     }
     move(vel, angle, isAI, joy) {
         var joystick = "";
+        let joyStickPos;
         if (isAI) {
             if (joy != " ") {
-                joystick = joy.GetDir();
+                //joystick = joy.GetDir();
+                joyStickPos = createVector(joy.GetX(), joy.GetY())
             }
-            if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
-                var boardPos = (this.pos.copy()).mult(1 / gridSize);
-                this.health -= 0.001;
-                if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, -(1.5 * gridSize / 100));
-                } else {
-                    this.vel = createVector(0, -(4 * gridSize / 100));
-                }
-            }
-            else if (keyIsDown(83) || joystick == "S" || joystick == "SE" || joystick == "SW") { // s key
-                this.health -= 0.001;
-                var boardPos = (this.pos.copy()).mult(1 / gridSize);
-                if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, (1.5 * gridSize / 100));
-                } else {
-                    this.vel = createVector(0, (4 * gridSize / 100));
-                }
+            if (joyStickPos) {
+                this.carAngle = -joyStickPos.heading() + PI / 2;
+                console.log(joyStickPos.mag() / 100);
+                this.vel = createVector(0, -(3 * joyStickPos.mag() / 100) * gridSize / 100);
             } else {
-                this.vel = createVector(0, 0);
-            }
-            if (keyIsDown(65) || joystick == "W" || joystick == "NW" || joystick == "SE") { // a key
-                this.carAngle -= PI / 120;
-                if (this.collide()) {
-                    this.carAngle += PI / 120;
-                    this.simulateImpulse(this.pointOfCollision);
+                if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
+                    var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                    this.health -= 0.001;
+                    if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                        this.vel = createVector(0, -(1.5 * gridSize / 100));
+                    } else {
+                        this.vel = createVector(0, -(4 * gridSize / 100));
+                    }
                 }
-            }
-            if (keyIsDown(68) || joystick == "E" || joystick == "NE" || joystick == "SW") { // d key
-                this.carAngle += PI / 120;
-                if (this.collide()) {
+                else if (keyIsDown(83) || joystick == "S" || joystick == "SE" || joystick == "SW") { // s key
+                    this.health -= 0.001;
+                    var boardPos = (this.pos.copy()).mult(1 / gridSize);
+                    if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                        this.vel = createVector(0, (1.5 * gridSize / 100));
+                    } else {
+                        this.vel = createVector(0, (4 * gridSize / 100));
+                    }
+                } else {
+                    this.vel = createVector(0, 0);
+                }
+                if (keyIsDown(65) || joystick == "W" || joystick == "NW" || joystick == "SE") { // a key
                     this.carAngle -= PI / 120;
-                    this.simulateImpulse(this.pointOfCollision);
+                    if (this.collide()) {
+                        this.carAngle += PI / 120;
+                        this.simulateImpulse(this.pointOfCollision);
+                    }
+                }
+                if (keyIsDown(68) || joystick == "E" || joystick == "NE" || joystick == "SW") { // d key
+                    this.carAngle += PI / 120;
+                    if (this.collide()) {
+                        this.carAngle -= PI / 120;
+                        this.simulateImpulse(this.pointOfCollision);
+                    }
                 }
             }
             this.pos.add(this.vel.rotate(this.carAngle));
@@ -280,7 +288,7 @@ class Car {
         let newCarVel = this.vel.copy().mult(cos(angleDiff));
         let deltaAngle = sin(angleDiff);
         this.pos.add(newCarVel);
-        if(this.collide()) {
+        if (this.collide()) {
             this.pos.sub(newCarVel);
         }
         this.carAngle -= deltaAngle * 0.1;
