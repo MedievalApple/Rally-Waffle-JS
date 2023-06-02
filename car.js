@@ -64,7 +64,11 @@ class Car {
             if (joyStickPos) {
                 this.carAngle = -joyStickPos.heading() + PI / 2;
                 console.log(joyStickPos.mag() / 100);
-                this.vel = createVector(0, -(3 * joyStickPos.mag() / 100) * gridSize / 100);
+                if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
+                    this.vel = createVector(0, -(1.5 * joyStickPos.mag() / 100) * gridSize / 100);
+                } else {
+                    this.vel = createVector(0, -(3.9 * joyStickPos.mag() / 100) * gridSize / 100);
+                }
             } else {
                 if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
                     var boardPos = (this.pos.copy()).mult(1 / gridSize);
@@ -283,15 +287,20 @@ class Car {
         this.carAngle %= 2 * PI;
         let delta = point.copy().sub(this.pos).rotate(this.carAngle);
         let collisionAngle = atan2(delta.x, delta.y);
-        this.collisionAngle %= PI / 2
+        // this.collisionAngle %= PI;
         let angleDiff = collisionAngle - this.carAngle;
         let newCarVel = this.vel.copy().mult(cos(angleDiff));
         let deltaAngle = sin(angleDiff);
-        this.pos.add(newCarVel);
-        if (this.collide()) {
-            this.pos.sub(newCarVel);
+        if (abs(deltaAngle) > PI / 8) {
+            this.pos.add(newCarVel);
+            if (this.collide()) {
+                this.pos.sub(newCarVel);
+            }
         }
         this.carAngle -= deltaAngle * 0.1;
+        if (this.collide()) {
+            this.carAngle += deltaAngle * 0.1;
+        }
         //console.log(deltaAngle);
     }
 
