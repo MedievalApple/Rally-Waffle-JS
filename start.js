@@ -6,4 +6,5 @@ function startGame() {
         localStorage.setItem("uploadScores", document.getElementById("uploadCheck").checked);
         window.location.replace("rally.html");
     }
+    if()
 }
