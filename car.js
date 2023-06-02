@@ -48,10 +48,6 @@ class Car {
         pop();
         stroke(255, 0, 0);
         strokeWeight(5);
-        if (this.pointOfCollision) {
-            // console.log((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y);
-            point((this.pointOfCollision.x * gridSize) - worldPos.x, (this.pointOfCollision.y * gridSize) - worldPos.y)
-        }
     }
     move(vel, angle, isAI, joy) {
         var joystick = "";
@@ -62,12 +58,15 @@ class Car {
                 joyStickPos = createVector(joy.GetX(), joy.GetY())
             }
             if (joyStickPos) {
+                var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.carAngle = -joyStickPos.heading() + PI / 2;
-                console.log(joyStickPos.mag() / 100);
+                if(joyStickPos.mag()>1) {
+                    this.health -= 0.001;
+                }
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
-                    this.vel = createVector(0, -(1.5 * joyStickPos.mag() / 100) * gridSize / 100);
+                    this.vel = createVector(0, -(joyStickPos.mag() / 100) * gridSize / 100);
                 } else {
-                    this.vel = createVector(0, -(3.9 * joyStickPos.mag() / 100) * gridSize / 100);
+                    this.vel = createVector(0, -(3 * joyStickPos.mag() / 100) * gridSize / 100);
                 }
             } else {
                 if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
