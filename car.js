@@ -50,7 +50,6 @@ class Car {
         strokeWeight(5);
     }
     move(vel, angle, isAI, joy) {
-        var joystick = "";
         let joyStickPos;
         if (isAI) {
             if (joy != " ") {
@@ -60,7 +59,7 @@ class Car {
             if (joyStickPos) {
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.carAngle = -joyStickPos.heading() + PI / 2;
-                if(joyStickPos.mag()>1) {
+                if (joyStickPos.mag() > 1) {
                     this.health -= 0.001;
                 }
                 if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -69,7 +68,7 @@ class Car {
                     this.vel = createVector(0, -(3 * joyStickPos.mag() / 100) * gridSize / 100);
                 }
             } else {
-                if (keyIsDown(87) || joystick == "N" || joystick == "NE" || joystick == "NW") { // w key
+                if (keyIsDown(87) || keyIsDown(38)) { // w & up key
                     var boardPos = (this.pos.copy()).mult(1 / gridSize);
                     this.health -= 0.001;
                     if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -78,7 +77,7 @@ class Car {
                         this.vel = createVector(0, -(4 * gridSize / 100));
                     }
                 }
-                else if (keyIsDown(83) || joystick == "S" || joystick == "SE" || joystick == "SW") { // s key
+                else if (keyIsDown(83) || keyIsDown(40)) { // s & down key
                     this.health -= 0.001;
                     var boardPos = (this.pos.copy()).mult(1 / gridSize);
                     if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -89,14 +88,14 @@ class Car {
                 } else {
                     this.vel = createVector(0, 0);
                 }
-                if (keyIsDown(65) || joystick == "W" || joystick == "NW" || joystick == "SE") { // a key
+                if (keyIsDown(65) || keyIsDown(37)) { // a & left key
                     this.carAngle -= PI / 120;
                     if (this.collide()) {
                         this.carAngle += PI / 120;
                         this.simulateImpulse(this.pointOfCollision);
                     }
                 }
-                if (keyIsDown(68) || joystick == "E" || joystick == "NE" || joystick == "SW") { // d key
+                if (keyIsDown(68) || keyIsDown(39)) { // d & right key
                     this.carAngle += PI / 120;
                     if (this.collide()) {
                         this.carAngle -= PI / 120;
