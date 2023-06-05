@@ -236,7 +236,7 @@ function setup() {
                 [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
             ],
             "maples": 15,
-            "enemies": 8,
+            "enemies": 6,
             "start": createVector(1, 0),
             "direction": PI
         }
