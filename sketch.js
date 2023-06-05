@@ -267,7 +267,7 @@ function setup() {
             UWUmode();
         }
         if(playerName.toLowerCase() == "ean") {
-            carImage = loadImage("./assets/nelson.jpg");
+            carImage = loadImage("./assets/nelson.png");
         }
 
         enemyImage = loadImage("./assets/enmeny.png");
