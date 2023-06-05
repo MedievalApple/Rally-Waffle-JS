@@ -379,15 +379,15 @@ function draw() {
     }
     fill(255, 60, 0);
     noStroke();
-    rect(width - 120, 5, 115, 20, 5);
+    rect(width - width/6, 5, width/6, 20, 5);
     fill(255);
     textSize(15);
     fill(255, 255, 0);
-    text(localStorage.getItem("username"), width - 35, 20)
+    text(localStorage.getItem("username"), width - width/20, 20)
     fill(255, 255, 255);
-    text(stopwatchString, width - 100, 20);
+    text(stopwatchString, width - width/6+width/30, 20);
     fill(255, 255, 0);
-    text(collectedSyrups, width - 115, 20);
+    text(collectedSyrups, width-width/6+width/100, 20);
 }
 function showMap(theMap) {
     for (let i = 0; i < theMap.length; i++) {
