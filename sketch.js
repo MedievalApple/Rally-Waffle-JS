@@ -266,6 +266,9 @@ function setup() {
         if (playerName.toLowerCase() == "uwu") {
             UWUmode();
         }
+        if(playerName.toLowerCase() == "ean") {
+            carImage = loadImage("./assets/nelson.jpg");
+        }
 
         enemyImage = loadImage("./assets/enmeny.png");
         grassImage = loadImage("./assets/grass.png");
