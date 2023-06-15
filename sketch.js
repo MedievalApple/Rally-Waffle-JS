@@ -23,7 +23,7 @@ var road = [];
 var road2;
 var worldPos;
 // var numEnemy = 0;
-var straigtRoadImage;
+var straightRoadImage;
 var verticalRoadImage;
 var cornerRoadImage;
 var cornerRightRoadImage;
@@ -40,6 +40,221 @@ var currentLevel = 0;
 var levels = [];
 var mapleImage;
 var playerName = localStorage.getItem("username");
+var joy = " ";
+
+const imageCache = {};
+
+function cachedLoadImage(path) {
+    if (!imageCache[path]) {
+        imageCache[path] = loadImage(path);
+    }
+
+    return imageCache[path];
+}
+
+function preload() {
+    levels[0] = {
+        "map": [
+            ["R", "G", "G", "W", "W", "G", "W", "W", "W", "W", "R", "R", "R", "R", "R", "G"],
+            ["R", "R", "R", "R", "R", "R", "R", "G", "W", "G", "R", "W", "W", "G", "R", "R"],
+            ["R", "W", "W", "R", "W", "W", "R", "R", "R", "R", "R", "W", "W", "G", "G", "R"],
+            ["R", "W", "W", "R", "W", "W", "W", "R", "W", "W", "G", "G", "W", "G", "W", "R"],
+            ["R", "W", "W", "R", "R", "R", "R", "R", "W", "W", "W", "G", "G", "G", "G", "R"],
+            ["R", "W", "R", "R", "G", "G", "G", "R", "R", "R", "R", "G", "W", "W", "W", "R"],
+            ["R", "R", "R", "G", "G", "W", "G", "G", "G", "W", "R", "R", "R", "R", "R", "R"],
+            ["R", "G", "R", "W", "G", "G", "G", "G", "G", "W", "R", "G", "W", "W", "G", "R"],
+            ["R", "W", "R", "R", "R", "R", "R", "W", "G", "R", "R", "G", "G", "W", "R", "R"],
+            ["R", "G", "R", "G", "W", "G", "R", "G", "W", "G", "R", "R", "R", "R", "R", "G"],
+            ["R", "R", "R", "R", "R", "R", "R", "R", "G", "G", "R", "G", "R", "G", "R", "W"],
+            ["R", "W", "W", "R", "W", "G", "G", "R", "R", "R", "R", "G", "R", "R", "R", "R"],
+            ["R", "W", "W", "R", "W", "W", "W", "R", "G", "G", "W", "G", "R", "G", "G", "R"],
+            ["R", "W", "R", "R", "R", "R", "R", "R", "G", "W", "W", "G", "R", "W", "W", "R"],
+            ["R", "W", "R", "G", "G", "W", "G", "R", "R", "G", "W", "G", "R", "G", "G", "R"],
+            ["R", "R", "R", "W", "W", "W", "G", "W", "R", "R", "R", "R", "R", "R", "R", "R"]
+        ],
+        "maples": [
+            createVector(3, 1),
+            createVector(7, 2),
+            createVector(15, 4),
+            createVector(0, 5),
+            createVector(15, 7),
+            createVector(6, 8),
+            createVector(10, 8),
+            createVector(2, 9),
+            createVector(9, 11),
+            createVector(13, 11),
+            createVector(4, 13),
+            createVector(0, 15),
+            createVector(2, 15)
+        ],
+        "enemies": 0,
+        "start": createVector(0, 0),
+        "direction": PI
+    }
+
+    levels[1] = {
+        "map": [
+            ["W", "R", "R", "R", "R", "R", "G", "W", "G", "R", "R", "R", "R", "R", "G", "W"],
+            ["R", "R", "G", "W", "G", "R", "R", "R", "R", "R", "W", "R", "G", "R", "R", "G"],
+            ["R", "G", "G", "G", "W", "W", "W", "R", "G", "G", "W", "R", "W", "W", "R", "R"],
+            ["R", "W", "W", "G", "W", "W", "W", "R", "G", "W", "W", "R", "W", "W", "W", "R"],
+            ["R", "W", "W", "G", "R", "R", "R", "R", "W", "W", "W", "R", "R", "R", "R", "R"],
+            ["R", "R", "W", "R", "R", "W", "W", "R", "G", "W", "W", "R", "G", "W", "W", "R"],
+            ["G", "R", "R", "R", "G", "W", "W", "R", "G", "G", "G", "R", "W", "W", "W", "R"],
+            ["W", "W", "W", "R", "R", "R", "R", "R", "W", "W", "G", "R", "G", "R", "R", "R"],
+            ["W", "R", "R", "R", "G", "R", "W", "W", "W", "G", "R", "R", "R", "R", "W", "G"],
+            ["R", "R", "G", "R", "W", "R", "R", "R", "R", "R", "R", "W", "G", "R", "R", "R"],
+            ["R", "G", "G", "R", "G", "W", "W", "R", "G", "W", "R", "W", "W", "W", "W", "R"],
+            ["R", "W", "W", "R", "R", "W", "G", "R", "R", "G", "R", "G", "W", "W", "W", "R"],
+            ["R", "W", "W", "G", "R", "R", "R", "W", "R", "W", "R", "R", "R", "R", "R", "R"],
+            ["R", "G", "W", "W", "R", "W", "R", "R", "R", "R", "R", "G", "R", "W", "W", "R"],
+            ["R", "R", "R", "W", "R", "W", "W", "R", "G", "R", "R", "R", "R", "W", "R", "R"],
+            ["W", "G", "R", "R", "R", "G", "G", "R", "W", "W", "W", "G", "R", "R", "R", "G"]
+        ],
+        "maples": [
+            createVector(0, 11),
+            createVector(1, 9),
+            createVector(2, 14),
+            createVector(3, 0),
+            createVector(7, 3),
+            createVector(8, 11),
+            createVector(11, 8),
+            createVector(12, 0),
+            createVector(14, 7),
+            createVector(14, 14),
+            createVector(15, 3)
+        ],
+        "enemies": 2,
+        "start": createVector(7, 7),
+        "direction": 0
+    }
+
+    levels[2] = {
+        "map": [
+            ["R", "G", "G", "W", "W", "G", "W", "W", "W", "W", "R", "R", "R", "R", "R", "G"],
+            ["R", "R", "R", "R", "R", "R", "R", "G", "W", "G", "R", "W", "W", "G", "R", "R"],
+            ["R", "W", "W", "R", "W", "W", "R", "R", "R", "R", "R", "W", "W", "G", "G", "R"],
+            ["R", "W", "W", "R", "W", "W", "W", "R", "W", "W", "G", "G", "W", "G", "W", "R"],
+            ["R", "W", "W", "R", "R", "R", "R", "R", "W", "W", "W", "G", "G", "G", "G", "R"],
+            ["R", "W", "R", "R", "G", "G", "G", "R", "R", "R", "R", "G", "W", "W", "W", "R"],
+            ["R", "R", "R", "G", "G", "W", "G", "G", "G", "W", "R", "R", "R", "R", "R", "R"],
+            ["R", "G", "R", "W", "G", "G", "G", "G", "G", "W", "R", "G", "W", "W", "G", "R"],
+            ["R", "W", "R", "R", "R", "R", "W", "W", "W", "G", "R", "R", "R", "R", "W", "G"],
+            ["R", "W", "G", "R", "W", "R", "R", "R", "R", "R", "R", "W", "G", "R", "R", "R"],
+            ["R", "G", "G", "R", "G", "W", "W", "R", "G", "W", "R", "W", "W", "W", "W", "R"],
+            ["R", "W", "W", "R", "R", "W", "G", "R", "R", "G", "R", "G", "W", "W", "W", "R"],
+            ["R", "W", "W", "G", "R", "R", "R", "W", "R", "W", "R", "R", "R", "R", "R", "R"],
+            ["R", "G", "W", "W", "R", "W", "R", "R", "R", "R", "R", "G", "R", "W", "W", "R"],
+            ["R", "R", "R", "W", "R", "W", "W", "R", "G", "R", "R", "R", "R", "W", "R", "R"],
+            ["W", "G", "R", "R", "R", "G", "G", "R", "W", "W", "W", "G", "R", "R", "R", "G"]
+        ],
+        "maples": [
+            createVector(3, 1),
+            createVector(7, 2),
+            createVector(15, 4),
+            createVector(0, 5),
+            createVector(15, 7),
+            createVector(11, 8),
+            createVector(8, 11),
+            createVector(0, 12),
+            createVector(7, 14),
+            createVector(14, 14),
+            createVector(3, 15),
+        ],
+        "enemies": 4,
+        "start": createVector(0, 0),
+        "direction": PI
+    };
+
+    levels[3] = {
+        "map": [
+            ["W", "R", "R", "R", "R", "R", "G", "R", "R", "R", "R", "R", "R", "R", "R", "R"],
+            ["W", "R", "W", "G", "W", "R", "R", "R", "W", "R", "W", "W", "W", "R", "W", "R"],
+            ["W", "R", "R", "R", "W", "R", "W", "R", "W", "R", "R", "R", "R", "R", "W", "R"],
+            ["W", "R", "W", "W", "W", "R", "W", "R", "W", "W", "W", "R", "W", "R", "W", "R"],
+            ["W", "R", "R", "R", "R", "R", "R", "R", "R", "R", "R", "R", "W", "R", "R", "R"],
+            ["W", "G", "W", "R", "W", "W", "W", "R", "W", "R", "W", "W", "W", "W", "W", "R"],
+            ["W", "R", "R", "R", "R", "R", "R", "R", "W", "R", "R", "R", "R", "R", "W", "R"],
+            ["W", "R", "W", "R", "W", "R", "W", "R", "W", "W", "W", "R", "W", "R", "W", "R"],
+            ["W", "R", "W", "R", "R", "R", "R", "R", "R", "R", "R", "R", "W", "R", "R", "R"],
+            ["W", "R", "W", "W", "W", "R", "W", "R", "W", "R", "W", "R", "W", "R", "W", "W"],
+            ["G", "R", "R", "R", "R", "R", "W", "R", "R", "R", "R", "R", "R", "R", "R", "R"],
+            ["G", "R", "W", "R", "W", "W", "W", "R", "W", "R", "W", "R", "G", "W", "G", "R"],
+            ["G", "R", "W", "R", "W", "R", "R", "R", "W", "R", "R", "R", "W", "W", "W", "R"],
+            ["W", "R", "W", "R", "W", "R", "W", "R", "W", "R", "W", "R", "G", "W", "G", "R"],
+            ["W", "R", "R", "R", "R", "R", "W", "R", "R", "R", "W", "R", "R", "R", "R", "R"],
+            ["W", "W", "W", "W", "W", "G", "G", "G", "W", "G", "G", "G", "W", "W", "W", "W"]
+        ],
+        "maples": [
+            createVector(7, 0),
+            createVector(11, 0),
+            createVector(3, 2),
+            createVector(9, 2),
+            createVector(7, 4),
+            createVector(15, 4),
+            createVector(3, 6),
+            createVector(9, 6),
+            createVector(15, 8),
+            createVector(5, 10),
+            createVector(9, 10),
+            createVector(1, 12),
+            createVector(7, 14),
+            createVector(11, 14),
+            createVector(15, 14)
+        ],
+        "enemies": 5,
+        "start": createVector(1, 0),
+        "direction": PI
+    };
+
+    map5 = [
+        ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"],
+        ["W", "W", "W", "W", "L", "L", "T", "T", "T", "T", "L", "L", "W", "W", "W", "W"],
+        ["W", "W", "W", "L", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
+        ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
+        ["W", "L", "T", "T", "L", "T", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W"],
+        ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
+        ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "L", "T", "T", "T", "L"],
+        ["L", "T", "S", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
+        ["L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
+        ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "T", "T", "T", "T", "L"],
+        ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
+        ["W", "L", "T", "L", "T", "T", "T", "T", "T", "T", "T", "L", "T", "T", "L", "W"],
+        ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
+        ["W", "W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
+        ["W", "W", "W", "W", "L", "L", "T", "T", "L", "T", "L", "L", "W", "W", "W", "W"],
+        ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"]
+    ];
+
+    specialSkins = {
+        "uwu": loadImage("./assets/uwu.png"),
+        "ean": loadImage("./assets/nelson.png")
+    }
+
+    if (specialSkins[playerName.toLowerCase()]) {
+        carImage = specialSkins[playerName.toLowerCase()];
+    } else {
+        carImage = loadImage("./assets/player.png");
+    }
+
+    enemyImage = loadImage("./assets/enemy.png");
+    grassImage = loadImage("./assets/grass.png");
+    cityImage = loadImage("./assets/cityBW.png");
+    mapleImage = loadImage("./assets/maple.png");
+
+    cachedLoadImage("./assets/road/000001010.png");
+    cachedLoadImage("./assets/road/000100010.png");
+    cachedLoadImage("./assets/road/000101000.png");
+    cachedLoadImage("./assets/road/000101010.png");
+    cachedLoadImage("./assets/road/010000010.png");
+    cachedLoadImage("./assets/road/010001000.png");
+    cachedLoadImage("./assets/road/010001010.png");
+    cachedLoadImage("./assets/road/010100000.png");
+    cachedLoadImage("./assets/road/010100010.png");
+    cachedLoadImage("./assets/road/010101000.png");
+    cachedLoadImage("./assets/road/010101010.png");
+}
+
 function setup() {
     if (localStorage.getItem("username") == "" || localStorage.getItem("username") == undefined || localStorage.getItem("username") == null) {
         window.location.replace("index.html");
@@ -50,267 +265,34 @@ function setup() {
         canvas.id("game");
         gridSize = floor(width / 8);
 
-        joy = " ";
-
         if (navigator.userAgent.toLowerCase().match(/mobile/i)) {
-            console.log("Is Mobile");
             joy = new JoyStick('joyDiv');
-            //document.getElementById("joyDiv").hidden = false;
-        } else {
-            console.log("I Not Mobile");
-            //document.getElementById("joyDiv").hidden = true;
         }
 
         player = new Car();
         player.pos = createVector(gridSize / 2, gridSize / 2);
         player.carAngle = PI;
-        // for (let i = 0; i < numEnemy; i++) {
-        //     enemy[i] = new Car();
-        // }
-        //enemy = new Car();
         worldPos = createVector(0, 0);
-        levels[0] = {
-            "map": [
-                ["S", "G", "G", "W", "W", "G", "W", "W", "W", "W", " ", " ", " ", " ", " ", "G"],
-                [" ", " ", " ", "M", " ", " ", " ", "G", "W", "G", " ", "W", "W", "G", " ", " "],
-                [" ", "W", "W", " ", "W", "W", " ", "M", " ", " ", " ", "W", "W", "G", "G", " "],
-                [" ", "W", "W", " ", "W", "W", "W", " ", "W", "W", "G", "G", "W", "G", "W", " "],
-                [" ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "W", "G", "G", "G", "G", "M"],
-                ["M", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
-                [" ", " ", " ", "G", "G", "W", "G", "G", "G", "W", " ", " ", " ", " ", " ", " "],
-                [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", "M"],
-                [" ", "W", " ", " ", " ", " ", "M", "W", "G", "-", "M", "G", "G", "W", " ", " "],
-                [" ", "G", "M", "G", "W", "G", " ", "G", "W", "G", " ", " ", " ", " ", " ", "G"],
-                [" ", " ", " ", " ", " ", " ", " ", " ", "G", "G", " ", "G", " ", "G", " ", "W"],
-                [" ", "W", "W", " ", "W", "G", "G", " ", " ", "M", " ", "G", " ", "M", " ", " "],
-                [" ", "W", "W", " ", "W", "W", "W", " ", "G", "G", "W", "G", " ", "G", "G", " "],
-                [" ", "W", " ", " ", "M", " ", " ", " ", "G", "W", "W", "G", " ", "W", "W", " "],
-                [" ", "W", " ", "G", "G", "W", "G", " ", " ", "G", "W", "G", " ", "G", "G", " "],
-                ["M", " ", " ", "W", "W", "W", "G", "W", " ", " ", " ", " ", "M", " ", " ", " "]
-            ],
-            "road": [
-                ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", "┌", "-", "-", "-", "┐", " "],
-                ["├", "-", "-", "T", "-", "-", "┐", " ", " ", " ", "|", " ", " ", " ", "L", "┐"],
-                ["|", " ", " ", "|", " ", " ", "L", "T", "-", "-", "┘", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "├", "-", "-", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "|"],
-                ["|", " ", "┌", "┘", " ", " ", " ", "L", "-", "-", "┐", " ", " ", " ", " ", "|"],
-                ["├", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "├", "-", "-", "-", "-", "┤"],
-                ["|", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", "├", "-", "-", "-", "┐", " ", " ", "-", "┤", " ", " ", " ", "┌", "┘"],
-                ["|", " ", "|", " ", " ", " ", "|", " ", " ", " ", "├", "-", "T", "-", "┤", " "],
-                ["├", "-", "┴", "T", "-", "-", "┴", "┐", " ", " ", "|", " ", "|", " ", "|", " "],
-                ["|", " ", " ", "|", " ", " ", " ", "├", "-", "-", "┘", " ", "├", "-", "┴", "┐"],
-                ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", "|", " ", " ", "|"],
-                ["|", " ", "┌", "┴", "-", "-", "-", "┤", " ", " ", " ", " ", "|", " ", " ", "|"],
-                ["|", " ", "|", " ", " ", " ", " ", "L", "┐", " ", " ", " ", "|", " ", " ", "|"],
-                ["L", "-", "┘", " ", " ", " ", " ", " ", "L", "-", "-", "-", "┴", "-", "-", "┘"]
-            ],
-            "maples": 13,
-            "enemies": 0,
-            "start": createVector(0, 0),
-            "direction": PI
-        }
 
-        levels[1] = {
-            "map": [
-                ["W", " ", " ", " ", " ", " ", "G", "W", "G", " ", " ", "M", " ", " ", "G", "W"],
-                [" ", " ", "G", "W", "G", " ", " ", " ", " ", "M", "W", " ", "G", " ", " ", "G"],
-                [" ", "G", "G", "G", "W", "W", "W", " ", "G", "G", "W", " ", "W", "W", "M", " "],
-                ["M", "W", "W", "G", "W", "W", "W", " ", "G", "W", "W", " ", "W", "W", "W", " "],
-                [" ", "W", "W", "G", " ", " ", " ", " ", "W", "W", "W", " ", " ", " ", " ", " "],
-                [" ", " ", "W", " ", " ", "W", "W", " ", "G", "W", "W", " ", "G", "W", "W", " "],
-                ["G", " ", " ", " ", "G", "W", "W", " ", "G", "G", "G", " ", "W", "W", "W", " "],
-                ["W", "W", "W", "M", " ", " ", " ", "S", "W", "W", "G", " ", "G", " ", " ", " "],
-                ["W", " ", " ", " ", "G", " ", "W", "W", "W", "G", " ", "M", " ", " ", "W", "G"],
-                [" ", " ", "G", " ", "W", " ", " ", " ", " ", " ", " ", "W", "G", " ", " ", " "],
-                [" ", "G", "G", " ", "G", "W", "W", " ", "G", "W", " ", "W", "W", "W", "W", " "],
-                [" ", "W", "W", " ", " ", "W", "G", " ", "M", "G", " ", "G", "W", "W", "W", " "],
-                ["M", "W", "W", "G", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " "],
-                [" ", "G", "W", "W", " ", "W", " ", " ", " ", " ", " ", "G", " ", "W", "W", " "],
-                [" ", " ", " ", "W", " ", "W", "W", "M", "G", " ", " ", " ", " ", "W", "M", " "],
-                ["W", "G", " ", "M", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
-            ],
-            "road": [
-                [" ", "┌", "-", "-", "-", "┐", " ", " ", " ", "┌", "-", "T", "-", "┐", " ", " "],
-                ["┌", "┘", " ", " ", " ", "L", "-", "T", "-", "┘", " ", "|", " ", "L", "┐", " "],
-                ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", "L", "┐"],
-                ["|", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-                ["|", " ", " ", " ", "┌", "-", "-", "┤", " ", " ", " ", "├", "-", "-", "-", "┤"],
-                ["L", "┐", " ", "┌", "┘", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-                [" ", "L", "-", "┤", " ", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", "|"],
-                [" ", " ", " ", "├", "-", "T", "-", "┘", " ", " ", " ", "|", " ", "┌", "-", "┘"],
-                [" ", "┌", "-", "┤", " ", "|", " ", " ", " ", " ", "┌", "┴", "-", "┤", " ", " "],
-                ["┌", "┘", " ", "|", " ", "L", "-", "T", "-", "-", "┤", " ", " ", "L", "-", "┐"],
-                ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "L", "┐", " ", " ", "L", "┐", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", "├", "-", "T", "-", "-", "┤"],
-                ["|", " ", " ", " ", "|", " ", "L", "T", "┴", "T", "┤", " ", "|", " ", " ", "|"],
-                ["L", "-", "┐", " ", "|", " ", " ", "|", " ", "L", "┴", "-", "┤", " ", "┌", "┘"],
-                [" ", " ", "L", "-", "┘", " ", " ", "|", " ", " ", " ", " ", "L", "-", "┘", " "]
-            ],
-            "maples": 11,
-            "enemies": 2,
-            "start": createVector(7, 7),
-            "direction": 0
-        }
-
-        levels[2] = {
-            "map": [
-                ["S", "G", "G", "W", "W", "G", "W", "W", "W", "W", " ", " ", " ", " ", " ", "G"],
-                [" ", " ", " ", "M", " ", " ", " ", "G", "W", "G", " ", "W", "W", "G", " ", " "],
-                [" ", "W", "W", " ", "W", "W", " ", "M", " ", " ", " ", "W", "W", "G", "G", " "],
-                [" ", "W", "W", " ", "W", "W", "W", " ", "W", "W", "G", "G", "W", "G", "W", " "],
-                [" ", "W", "W", " ", " ", " ", " ", " ", "W", "W", "W", "G", "G", "G", "G", "M"],
-                ["M", "W", " ", " ", "G", "G", "G", " ", " ", " ", " ", "G", "W", "W", "W", " "],
-                [" ", " ", " ", "G", "G", "W", "G", "G", "G", "W", " ", " ", " ", " ", " ", " "],
-                [" ", "G", " ", "W", "G", "G", "G", "G", "G", "W", " ", "G", "W", "W", "G", "M"],
-                [" ", "W", " ", " ", " ", " ", "W", "W", "W", "G", " ", "M", " ", " ", "W", "G"],
-                [" ", "W", "G", " ", "W", " ", " ", " ", " ", " ", " ", "W", "G", " ", " ", " "],
-                [" ", "G", "G", " ", "G", "W", "W", " ", "G", "W", " ", "W", "W", "W", "W", " "],
-                [" ", "W", "W", " ", " ", "W", "G", " ", "M", "G", " ", "G", "W", "W", "W", " "],
-                ["M", "W", "W", "G", " ", " ", " ", "W", " ", "W", " ", " ", " ", " ", " ", " "],
-                [" ", "G", "W", "W", " ", "W", " ", " ", " ", " ", " ", "G", " ", "W", "W", " "],
-                [" ", " ", " ", "W", " ", "W", "W", "M", "G", " ", " ", " ", " ", "W", "M", " "],
-                ["W", "G", " ", "M", " ", "G", "G", " ", "W", "W", "W", "G", " ", " ", " ", "G"]
-            ],
-            "road": [
-                ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", "┌", "-", "-", "-", "┐", " "],
-                ["├", "-", "-", "T", "-", "-", "┐", " ", " ", " ", "|", " ", " ", " ", "L", "┐"],
-                ["|", " ", " ", "|", " ", " ", "L", "T", "-", "-", "┘", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "├", "-", "-", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "|"],
-                ["|", " ", "┌", "┘", " ", " ", " ", "L", "-", "-", "┐", " ", " ", " ", " ", "|"],
-                ["├", "-", "┤", " ", " ", " ", " ", " ", " ", " ", "├", "-", "-", "-", "-", "┤"],
-                ["|", " ", "|", " ", " ", " ", " ", " ", " ", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", "L", "T", "-", "┐", " ", " ", " ", " ", "├", "-", "-", "┐", " ", " "],
-                ["|", " ", " ", "|", " ", "L", "-", "T", "-", "-", "┤", " ", " ", "L", "-", "┐"],
-                ["|", " ", " ", "|", " ", " ", " ", "|", " ", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", "L", "┐", " ", " ", "L", "┐", " ", "|", " ", " ", " ", " ", "|"],
-                ["|", " ", " ", " ", "├", "-", "┐", " ", "|", " ", "├", "-", "T", "-", "-", "┤"],
-                ["|", " ", " ", " ", "|", " ", "L", "T", "┴", "T", "┤", " ", "|", " ", " ", "|"],
-                ["L", "-", "┐", " ", "|", " ", " ", "|", " ", "L", "┴", "-", "┤", " ", "┌", "┘"],
-                [" ", " ", "L", "-", "┘", " ", " ", "|", " ", " ", " ", " ", "L", "-", "┘", " "]
-            ],
-            "maples": 11,
-            "enemies": 4,
-            "start": createVector(0, 0),
-            "direction": PI
-        };
-
-        levels[3] = {
-            "map": [
-                ["W", "S", " ", " ", " ", " ", "G", "M", " ", " ", " ", "M", " ", " ", " ", " "],
-                ["W", " ", "W", "G", "W", " ", " ", " ", "W", " ", "W", "W", "W", " ", "W", " "],
-                ["W", " ", " ", "M", "W", " ", "W", " ", "W", "M", " ", " ", " ", " ", "W", " "],
-                ["W", " ", "W", "W", "W", " ", "W", " ", "W", "W", "W", " ", "W", " ", "W", " "],
-                ["W", " ", " ", " ", " ", " ", " ", "M", " ", " ", " ", " ", "W", " ", " ", "M"],
-                ["W", "G", "W", " ", "W", "W", "W", " ", "W", " ", "W", "W", "W", "W", "W", " "],
-                ["W", " ", " ", "M", " ", " ", " ", " ", "W", "M", " ", " ", " ", " ", "W", " "],
-                ["W", " ", "W", " ", "W", " ", "W", " ", "W", "W", "W", " ", "W", " ", "W", " "],
-                ["W", " ", "W", " ", " ", " ", " ", " ", " ", " ", " ", " ", "W", " ", " ", "M"],
-                ["W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", "W"],
-                ["G", " ", " ", " ", " ", "M", "W", " ", " ", "M", " ", " ", " ", " ", " ", " "],
-                ["G", " ", "W", " ", "W", "W", "W", " ", "W", " ", "W", " ", "G", "W", "G", " "],
-                ["G", "M", "W", " ", "W", " ", " ", " ", "W", " ", " ", " ", "W", "W", "W", " "],
-                ["W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "W", " ", "G", "W", "G", " "],
-                ["W", " ", " ", " ", " ", " ", "W", "M", " ", " ", "W", "M", " ", " ", " ", "M"],
-                ["W", "W", "W", "W", "W", "G", "G", "G", "W", "G", "G", "G", "W", "W", "W", "W"]
-            ],
-            "road": [
-                [" ", "┌", "-", "-", "-", "┐", " ", "┌", "-", "T", "-", "-", "-", "T", "-", "┐"],
-                [" ", "|", " ", " ", " ", "├", "-", "┤", " ", "|", " ", " ", " ", "|", " ", "|"],
-                [" ", "├", "-", "-", " ", "|", " ", "|", " ", "L", "-", "T", "-", "┤", " ", "|"],
-                [" ", "|", " ", " ", " ", "|", " ", "|", " ", " ", " ", "|", " ", "|", " ", "|"],
-                [" ", "L", "-", "T", "-", "┴", "-", "+", "-", "T", "-", "┘", " ", "L", "-", "┤"],
-                [" ", " ", " ", "|", " ", " ", " ", "|", " ", "|", " ", " ", " ", " ", " ", "|"],
-                [" ", "┌", "-", "+", "-", "T", "-", "┤", " ", "L", "-", "T", "-", "┐", " ", "|"],
-                [" ", "|", " ", "|", " ", "|", " ", "|", " ", " ", " ", "|", " ", "|", " ", "|"],
-                [" ", "|", " ", "L", "-", "+", "-", "+", "-", "T", "-", "┤", " ", "├", "-", "┘"],
-                [" ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", " "],
-                [" ", "├", "-", "T", "-", "┘", " ", "├", "-", "+", "-", "+", "-", "┴", "-", "┐"],
-                [" ", "|", " ", "|", " ", " ", " ", "|", " ", "|", " ", "|", " ", " ", " ", "|"],
-                [" ", "|", " ", "|", " ", "┌", "-", "┤", " ", "├", "-", "┤", " ", " ", " ", "|"],
-                [" ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", "|", " ", " ", " ", "|"],
-                [" ", "L", "-", "┴", "-", "┘", " ", "L", "-", "┘", " ", "L", "-", "-", "-", "┘"],
-                [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
-            ],
-            "maples": 15,
-            "enemies": 5,
-            "start": createVector(1, 0),
-            "direction": PI
-        }
-
-
-        map5 = [
-            ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"],
-            ["W", "W", "W", "W", "L", "L", "T", "T", "T", "T", "L", "L", "W", "W", "W", "W"],
-            ["W", "W", "W", "L", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
-            ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
-            ["W", "L", "T", "T", "L", "T", "T", "T", "L", "T", "T", "T", "T", "T", "L", "W"],
-            ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
-            ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "L", "T", "T", "T", "L"],
-            ["L", "T", "S", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
-            ["L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L"],
-            ["L", "T", "T", "T", "T", "T", "W", "T", "T", "W", "T", "T", "T", "T", "T", "L"],
-            ["W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W"],
-            ["W", "L", "T", "L", "T", "T", "T", "T", "T", "T", "T", "L", "T", "T", "L", "W"],
-            ["W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W"],
-            ["W", "W", "W", "L", "T", "T", "T", "T", "T", "T", "T", "T", "L", "W", "W", "W"],
-            ["W", "W", "W", "W", "L", "L", "T", "T", "L", "T", "L", "L", "W", "W", "W", "W"],
-            ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"]
-        ];
-
-        carImage = loadImage("./assets/player.png");
-
-        if (playerName.toLowerCase() == "uwu") {
-            UWUmode();
-        }
-        if(playerName.toLowerCase() == "ean") {
-            carImage = loadImage("./assets/nelson.png");
-        }
-
-        enemyImage = loadImage("./assets/enmeny.png");
-        grassImage = loadImage("./assets/grass.png");
-        straigtRoadImage = loadImage("./assets/stright.png");
-        verticalRoadImage = loadImage("./assets/strightRotate90.png");
-        cornerRoadImage = loadImage("./assets/90.png");
-        cornerRightRoadImage = loadImage("./assets/90Right.png");
-        cornerLeftRoadImage = loadImage("./assets/90Left.png");
-        cornerDownRoadImage = loadImage("./assets/90Down.png");
-        TRoadImage = loadImage("./assets/t.png");
-        TRightRoadImage = loadImage("./assets/tRight.png");
-        TLeftRoadImage = loadImage("./assets/tLeft.png");
-        TTopRoadImage = loadImage("./assets/tTop.png");
-        cityImage = loadImage("./assets/cityBW.png");
-        mapleImage = loadImage("./assets/maple.png");
-        intersectionImage = loadImage("./assets/4way.png");
-        spawnSyrups(levels[0].map, 0);
-        let miniMap = document.getElementById("miniMap");
-        for (let i = 0; i < 13; i++) {
-            let syrup = document.createElement("div");
-            syrup.style = `width: 6.25%; height: 6.25%; position: absolute; left:` + (mapleSyrups[i].x * 6.25) + `%; top:` + (mapleSyrups[i].y * 6.25) + `%; background-color: rgb(255, 255, 0);`;
-            syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
-            miniMap.append(syrup);
-        }
+        spawnEntities(levels[0]);
         selectedMap = levels[0].map;
         selectedRoad = levels[0].road;
         startStopwatch();
     }
 }
 
-function mousePressed() {
-    //nextLevel();
-}
-//yay
+function mousePressed() { }
+
 function keyPressed() {
     if (key == "m") {
-        document.getElementById("miniMapDiv").hidden = !document.getElementById("miniMapDiv").hidden;
+        document.getElementById("miniMap").hidden = !document.getElementById("miniMap").hidden;
     }
 }
+
 function nextLevel() {
     currentLevel++;
     worldPos = createVector(0, 0);
+
     if (currentLevel == levels.length) {
         alert("you win");
         currentLevel = -1;
@@ -320,178 +302,181 @@ function nextLevel() {
         nextLevel();
         return;
     }
+
     selectedMap = levels[currentLevel].map;
     selectedRoad = levels[currentLevel].road;
     enemy = [];
-    for (let i = 0; i < mapleSyrups.length; i++) {
-        document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
-    }
     collectedSyrups = 0;
+
     for (let i = currentLevel - 1; i >= 0; i--) {
-        collectedSyrups += levels[i].maples;
+        collectedSyrups += levels[i].maples.length;
     }
+
     mapleSyrups = [];
     player.pos = createVector(levels[currentLevel].start.x * gridSize + gridSize / 2, levels[currentLevel].start.y * gridSize + gridSize / 2);
     player.carAngle = levels[currentLevel].direction;
     player.health = 1;
-    spawnSyrups(selectedMap, levels[currentLevel].enemies);
-    for (let i = 0; i < levels[currentLevel].maples; i++) {
-        let syrup = document.createElement("div");
-        syrup.style = `width:` + (window.innerWidth * .15 * .0625) + `px; height:` + (window.innerWidth * .15 * .0625) + `px; position: absolute; left:` + (mapleSyrups[i].x * window.innerWidth * .15 * .0625) + `px; top:` + (mapleSyrups[i].y * window.innerWidth * .15 * .0625) + `px; background-color: rgb(255, 255, 0);`;
-        syrup.id = mapleSyrups[i].x + "-" + mapleSyrups[i].y;
-        miniMap.append(syrup);
-    }
+
+    console.log(currentLevel)
+    console.log(levels[currentLevel])
+    spawnEntities(levels[currentLevel]);
 }
+
 function restartCurrentLevel() {
     currentLevel--;
     nextLevel();
 }
+
 function draw() {
-    // if (!stopwatchString) {
-    //     startStopwatch();
-    // }
     background(255);
-    showRoad(selectedRoad);
+    drawMiniMap(selectedMap);
     showMap(selectedMap);
+
     player.move(null, null, true, joy);
     player.show(carImage, true);
+
     for (let i = 0; i < enemy.length; i++) {
         enemy[i].show(enemyImage);
+
         Wander(enemy[i]);
+
         if (enemy[i].collideOtherCar(player)) {
-            // location.reload();
             restartCurrentLevel();
             console.log("collideWithPlayer");
-            //clearInterval(stopwatchInterval);
         }
     }
-    let carHTML = document.getElementById("car");
-    carHTML.style.left = (floor(player.pos.x / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
-    carHTML.style.top = (floor(player.pos.y / gridSize) * (window.innerWidth * .15 * .0625)) + "px";
+
     for (let i = 0; i < mapleSyrups.length; i++) {
         mapleSyrups[i].show();
+
         if (mapleSyrups[i].collide()) {
-            document.getElementById(mapleSyrups[i].x + "-" + mapleSyrups[i].y).remove();
             mapleSyrups.splice(i, 1);
             player.health = 1;
             collectedSyrups++;
         }
     }
+
     if (mapleSyrups.length == 0) {
         nextLevel();
     }
+
     fill(255, 60, 0);
     noStroke();
-    rect(width - width/6, 0, width/6, width/40, 5);
+    rect(width - width / 6, 0, width / 6, width / 40, 5);
     fill(255);
-    textSize(width/50);
+    textSize(width / 50);
     fill(255, 255, 0);
-    text(localStorage.getItem("username"), width - width/20, width/50)
+    text(localStorage.getItem("username"), width - width / 20, width / 50)
     fill(255, 255, 255);
-    text(stopwatchString, width - width/6+width/30, width/50);
+    text(stopwatchString, width - width / 6 + width / 30, width / 50);
     fill(255, 255, 0);
-    text(collectedSyrups, width-width/6+width/100, width/50);
+    text(collectedSyrups, width - width / 6 + width / 100, width / 50);
 }
-function showMap(theMap) {
-    for (let i = 0; i < theMap.length; i++) {
-        for (let j = 0; j < theMap[0].length; j++) {
-            if (theMap[i][j]) {
-                if (theMap[i][j] == "W") {
-                    fill(151);
-                    noStroke();
-                    image(cityImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
-                    cityImage.resizeNN(gridSize, gridSize);
-                } else if (theMap[i][j] == "G") {
-                    fill(0, 177, 0);
-                    noStroke();
-                    image(grassImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
-                    grassImage.resizeNN(gridSize, gridSize);
-                }
-            }
-        }
+
+function drawMiniMap() {
+    let miniMap = document.getElementById("miniMap"); // canvas
+
+    let miniMapWidth = miniMap.width;
+    let miniMapHeight = miniMap.height;
+
+    let miniMapContext = miniMap.getContext("2d");
+
+    miniMapContext.fillStyle = "rgb(0, 0, 0)";
+    miniMapContext.fillRect(0, 0, miniMapWidth, miniMapHeight);
+
+    // Calculating the ratio of game board positions to canvas positions
+    const ratioX = miniMapWidth / selectedMap[0].length;
+    const ratioY = miniMapHeight / selectedMap.length;
+
+    const playerX = floor(player.pos.x / gridSize) * ratioX + ratioX / 2;
+    const playerY = floor(player.pos.y / gridSize) * ratioY + ratioY / 2;
+
+    // Draw the player (circle, rgb(255, 112, 0))
+    miniMapContext.fillStyle = "rgb(255, 112, 0)";
+    miniMapContext.beginPath();
+    miniMapContext.arc(playerX, playerY, 5, 0, 2 * Math.PI);
+    miniMapContext.fill();
+
+    // Draw maple syrups (square, rgb(255, 255, 0))
+    miniMapContext.fillStyle = "rgb(255, 255, 0)";
+    for (let i = 0; i < mapleSyrups.length; i++) {
+        miniMapContext.fillRect(mapleSyrups[i].x * ratioX, mapleSyrups[i].y * ratioY, ratioX, ratioY);
     }
 }
-function showRoad(theRoad) {
-    for (let i = 0; i < theRoad.length; i++) {
-        for (let j = 0; j < theRoad[0].length; j++) {
-            if (theRoad[i][j]) {
-                if (theRoad[i][j] == "-") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    //image(straigtRoadImage, j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
-                    image(straigtRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    straigtRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                    //rect(j * gridSize - worldPos.x, i * gridSize - worldPos.y, gridSize, gridSize);
-                } else if (theRoad[i][j] == "|") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(verticalRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    verticalRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "T") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(TRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    TRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "┘") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(cornerRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    cornerRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "├") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(TRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    TRightRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "┤") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(TLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    TLeftRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "┴") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(TTopRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    TTopRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "L") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(cornerRightRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    cornerRightRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "┌") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(cornerLeftRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    cornerLeftRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "┐") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(cornerDownRoadImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    cornerDownRoadImage.resizeNN(gridSize, gridSize);
-                    pop();
-                } else if (theRoad[i][j] == "+") {
-                    push();
-                    translate(j * gridSize - worldPos.x + gridSize / 2, i * gridSize - worldPos.y + gridSize / 2);
-                    image(intersectionImage, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
-                    //image(straigtRoadImage, 0,0);
-                    intersectionImage.resizeNN(gridSize, gridSize);
-                    pop();
+
+// Function to check if "R" is present in adjacent cells
+function getAdjacentMask(map, row, col) {
+    let mask = 0b00000000;
+
+    /*
+        0 1 2
+        3   5
+        6 7 8
+    */
+
+    const top = 0b000000010;
+    const left = 0b000001000;
+    const right = 0b000100000;
+    const bottom = 0b010000000;
+
+    function getNeighbor(row, col) {
+        if (row < 0 || row >= map.length || col < 0 || col >= map[0].length) {
+            return 0;
+        }
+
+        return map[row][col] == "R" ? 1 : 0;
+    }
+
+    if (col >= 0 && col < map[0].length && row >= 0 && row < map.length) {
+        // return map[row - 1][col] * top + map[row][col - 1] * left + map[row][col + 1] * right + map[row + 1][col] * bottom;
+        return getNeighbor(row - 1, col) * top
+            + getNeighbor(row, col - 1) * left
+            + getNeighbor(row, col + 1) * right
+            + getNeighbor(row + 1, col) * bottom;
+    }
+
+    return mask;
+}
+
+// Function to place an image at a specified position on the game board
+function placeImageAtPos(row, col, img) {
+    push();
+    translate(row * gridSize - worldPos.x + gridSize / 2, col * gridSize - worldPos.y + gridSize / 2);
+    img.resizeNN(gridSize, gridSize);
+    image(img, -gridSize / 2, -gridSize / 2, gridSize, gridSize);
+    pop();
+}
+
+function getImageByNeighbors(map, row, col) {
+    const mask = getAdjacentMask(map, row, col);
+
+    if (mask == 0x00000000) {
+        return cachedLoadImage("./assets/road/010000010.png");
+    }
+
+    return cachedLoadImage("./assets/road/" + mask.toString(2).padStart(9, "0") + ".png");
+}
+
+function showMap(map) {
+    for (let row = 0; row < map.length; row++) {
+        for (let col = 0; col < map[0].length; col++) {
+            if (map[row][col]) {
+                if (map[row][col] == "W") {
+                    fill(151);
+                    noStroke();
+                    cityImage.resizeNN(gridSize, gridSize);
+                    image(cityImage, col * gridSize - worldPos.x, row * gridSize - worldPos.y, gridSize, gridSize);
+                } else if (map[row][col] == "G") {
+                    fill(0, 177, 0);
+                    noStroke();
+                    grassImage.resizeNN(gridSize, gridSize);
+                    image(grassImage, col * gridSize - worldPos.x, row * gridSize - worldPos.y, gridSize, gridSize);
+                } else if (map[row][col] == "R") {
+                    const roadImage = getImageByNeighbors(map, row, col);
+
+                    if (roadImage) {
+                        placeImageAtPos(col, row, roadImage);
+                    }
                 }
             }
         }
@@ -503,6 +488,7 @@ class Syrup {
         this.x = x;
         this.y = y;
     }
+
     show() {
         fill(255, 255, 0);
         push();
@@ -510,8 +496,8 @@ class Syrup {
         image(mapleImage, -gridSize / 4, -gridSize / 4, gridSize / 2, gridSize / 2);
         mapleImage.resizeNN(gridSize / 2, gridSize / 2);
         pop();
-
     }
+
     collide() {
         var boardPos = (player.pos.copy()).mult(1 / gridSize);
         if (this.y == floor(boardPos.y) && this.x == floor(boardPos.x)) {
@@ -521,36 +507,29 @@ class Syrup {
     }
 }
 
-function spawnSyrups(theMap, numEnemy) {
-    let enemiesSpot = [];
-    for (let i = 0; i < theMap.length; i++) {
-        for (let j = 0; j < theMap[0].length; j++) {
-            if (theMap[i][j]) {
-                if (theMap[i][j] == "M") {
-                    mapleSyrups.push(new Syrup(j, i));
-                    enemiesSpot.push(createVector(j, i));
-                }
-            }
-        }
+function spawnEntities(level) {
+    let enemySpawns = [];
+
+    for (let maple of level.maples) {
+        mapleSyrups.push(new Syrup(maple.x, maple.y));
+        enemySpawns.push(createVector(maple.x, maple.y));
     }
-    for (let i = 0; i < numEnemy; i++) {
+
+    for (let i = 0; i < level.enemies; i++) {
         enemy[i] = new Car();
-        let randomPos = enemiesSpot[floor(random(enemiesSpot.length))];
+        let randomPos = enemySpawns[floor(random(enemySpawns.length))];
         enemy[i].pos = createVector(randomPos.x * gridSize + gridSize / 2, randomPos.y * gridSize + gridSize / 2);
     }
 }
-//Switches Player Sprite To UWU
-function UWUmode() {
-    carImage = loadImage("./assets/player_UWU.png");
-}
 
-//AI
+// AI
 function Wander(ai) {
-    var aiPos = (ai.pos.copy()).mult(1 / gridSize);
+    var aiPos = ai.pos.copy().mult(1 / gridSize);
     if (!ai.prevAiPos) {
         ai.prevAiPos = aiPos.copy();
         ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false, joy);
     }
+
     if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1) && ai.aiMovingDirection) {
         switch (ai.aiMovingDirection) {
             case "left":
@@ -571,47 +550,62 @@ function Wander(ai) {
     } else {
         ai.prevAiPos.x = aiPos.x;
         ai.prevAiPos.y = aiPos.y;
-        var avaibleDirections = [];
-        if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] == "M") {
-            avaibleDirections.push("left");
-            // ai.move(createVector(0, -2), -PI / 2, false);
+        var availableDirections = [];
+
+        console.log(aiPos.x, aiPos.y)
+
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "R") {
+            availableDirections.push("left");
+            console.log("left");
         }
-        if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] == "M") {
-            avaibleDirections.push("right");
-            // ai.move(createVector(0, -2), -PI / 2, false);
+
+        if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "R") {
+            availableDirections.push("right");
+            console.log("right");
         }
+
         if (withInBounds(floor(aiPos.y - 1), floor(aiPos.x))) {
-            if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "G" || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] == "M") {
-                avaibleDirections.push("top");
-                // ai.move(createVector(0, -2), -PI / 2, false);
+            if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "RR") {
+                availableDirections.push("top");
+                console.log("top");
             }
         }
+
         if (withInBounds(floor(aiPos.y + 1), floor(aiPos.x))) {
-            if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "G" || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] == "M") {
-                avaibleDirections.push("bottom");
+            if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "R") {
+                availableDirections.push("bottom");
+                console.log("bottom");
             }
         }
-        if (avaibleDirections.length > 1) {
-            for (let i = 0; i < avaibleDirections.length; i++) {
-                if (ai.aiMovingDirection == "left") {
-                    if (avaibleDirections[i] == "right")
-                        avaibleDirections.splice(i, 1);
-                }
-                if (ai.aiMovingDirection == "right") {
-                    if (avaibleDirections[i] == "left")
-                        avaibleDirections.splice(i, 1);
-                }
-                if (ai.aiMovingDirection == "top") {
-                    if (avaibleDirections[i] == "bottom")
-                        avaibleDirections.splice(i, 1);
-                }
-                if (ai.aiMovingDirection == "bottom") {
-                    if (avaibleDirections[i] == "top")
-                        avaibleDirections.splice(i, 1);
+
+        if (availableDirections.length > 1) {
+            for (let i = 0; i < availableDirections.length; i++) {
+                switch (ai.aiMovingDirection) {
+                    case "left":
+                        if (availableDirections[i] === "right") {
+                            availableDirections.splice(i, 1);
+                        }
+                        break;
+                    case "right":
+                        if (availableDirections[i] === "left") {
+                            availableDirections.splice(i, 1);
+                        }
+                        break;
+                    case "top":
+                        if (availableDirections[i] === "bottom") {
+                            availableDirections.splice(i, 1);
+                        }
+                        break;
+                    case "bottom":
+                        if (availableDirections[i] === "top") {
+                            availableDirections.splice(i, 1);
+                        }
+                        break;
                 }
             }
         }
-        ai.aiMovingDirection = avaibleDirections[floor(random(avaibleDirections.length))];
+
+        ai.aiMovingDirection = availableDirections[floor(random(availableDirections.length))];
 
         switch (ai.aiMovingDirection) {
             case "left":
@@ -627,15 +621,18 @@ function Wander(ai) {
                 ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
                 break;
             default:
-                console.log(ai.aiMovingDirection)
+                console.log(ai.aiMovingDirection);
         }
     }
 }
+
+
 function withInBounds(x, y) {
     if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;
     return true;
 }
 var stopwatchInterval;
+
 function startStopwatch() {
     var startTime = Date.now();
     stopwatchInterval = setInterval(function () {

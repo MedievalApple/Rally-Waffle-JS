@@ -53,9 +53,9 @@ class Car {
         let joyStickPos;
         if (isAI) {
             if (joy != " ") {
-                //joystick = joy.GetDir();
                 joyStickPos = createVector(joy.GetX(), joy.GetY())
             }
+
             if (joyStickPos) {
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.carAngle = -joyStickPos.heading() + PI / 2;
@@ -76,8 +76,7 @@ class Car {
                     } else {
                         this.vel = createVector(0, -(4 * gridSize / 100));
                     }
-                }
-                else if (keyIsDown(83) || keyIsDown(40)) { // s & down key
+                } else if (keyIsDown(83) || keyIsDown(40)) { // s & down key
                     this.health -= 0.001;
                     var boardPos = (this.pos.copy()).mult(1 / gridSize);
                     if (selectedMap[floor(boardPos.y)][floor(boardPos.x)] == "G") {
@@ -88,30 +87,35 @@ class Car {
                 } else {
                     this.vel = createVector(0, 0);
                 }
+
                 if (keyIsDown(65) || keyIsDown(37)) { // a & left key
-                    this.carAngle -= PI / 120;
+                    this.carAngle -= PI / 80;
                     if (this.collide()) {
-                        this.carAngle += PI / 120;
+                        this.carAngle += PI / 80;
                         this.simulateImpulse(this.pointOfCollision);
                     }
                 }
                 if (keyIsDown(68) || keyIsDown(39)) { // d & right key
-                    this.carAngle += PI / 120;
+                    this.carAngle += PI / 80;
                     if (this.collide()) {
-                        this.carAngle -= PI / 120;
+                        this.carAngle -= PI / 80;
                         this.simulateImpulse(this.pointOfCollision);
                     }
                 }
             }
+
             this.pos.add(this.vel.rotate(this.carAngle));
+
             if (this.collide()) {
                 this.pos.sub(this.vel);
                 this.simulateImpulse(this.pointOfCollision);
             }
+
             if (keyIsDown(88)) { // x key
                 var boardPos = (this.pos.copy()).mult(1 / gridSize);
                 this.pos = createVector(floor(boardPos.x), floor(boardPos.y)).mult(gridSize).add(gridSize / 2, gridSize / 2);
             }
+
             if (this.pos.x > width / 2) {
                 if (this.pos.x + width / 2 > 16 * gridSize) {
                     worldPos.x = (16 * gridSize) - width;
@@ -119,6 +123,7 @@ class Car {
                     worldPos.x = floor(this.pos.x - (width / 2));
                 }
             }
+
             if (this.pos.y > height / 2) {
                 if (this.pos.y + height / 2 > 16 * gridSize) {
                     worldPos.y = (16 * gridSize) - height;
@@ -140,6 +145,7 @@ class Car {
     }
     collide() {
         this.pointOfCollision = this.findCollisionPoint();
+
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
         corners[0].add(this.pos);
         corners[0].mult(1 / gridSize);
@@ -155,6 +161,7 @@ class Car {
         corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
         corners[3].add(this.pos);
         corners[3].mult(1 / gridSize);
+
         if (withInBounds(floor(corners[0].y), floor(corners[0].x))) {
             if (selectedMap[floor(corners[0].y)][floor(corners[0].x)] == "W") {
                 let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
@@ -172,6 +179,7 @@ class Car {
                 return true;
             }
         }
+
         if (withInBounds(floor(corners[1].y), floor(corners[1].x))) {
             if (selectedMap[floor(corners[1].y)][floor(corners[1].x)] == "W") {
                 let v1 = (corners[0].copy().sub(corners[1])).mult(gridSize);
@@ -189,6 +197,7 @@ class Car {
                 return true;
             }
         }
+
         if (withInBounds(floor(corners[2].y), floor(corners[2].x))) {
             if (selectedMap[floor(corners[2].y)][floor(corners[2].x)] == "W") {
                 let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
@@ -206,6 +215,7 @@ class Car {
                 return true;
             }
         }
+        
         if (withInBounds(floor(corners[3].y), floor(corners[3].x))) {
             if (selectedMap[floor(corners[3].y)][floor(corners[3].x)] == "W") {
                 let v1 = (corners[1].copy().sub(corners[3])).mult(gridSize);
@@ -240,6 +250,7 @@ class Car {
         }
         return false;
     }
+
     findCollisionPoint() {
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
         corners[0].add(this.pos);
@@ -281,6 +292,7 @@ class Car {
             }
         }
     }
+
     simulateImpulse(point) {
         this.carAngle %= 2 * PI;
         let delta = point.copy().sub(this.pos).rotate(this.carAngle);
