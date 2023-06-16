@@ -552,29 +552,24 @@ function Wander(ai) {
         ai.prevAiPos.y = aiPos.y;
         var availableDirections = [];
 
-        console.log(aiPos.x, aiPos.y)
 
         if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "R") {
             availableDirections.push("left");
-            console.log("left");
         }
 
         if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "R") {
             availableDirections.push("right");
-            console.log("right");
         }
 
         if (withInBounds(floor(aiPos.y - 1), floor(aiPos.x))) {
             if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "RR") {
                 availableDirections.push("top");
-                console.log("top");
             }
         }
 
         if (withInBounds(floor(aiPos.y + 1), floor(aiPos.x))) {
             if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "R") {
                 availableDirections.push("bottom");
-                console.log("bottom");
             }
         }
 
