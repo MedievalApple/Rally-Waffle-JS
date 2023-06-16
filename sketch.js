@@ -337,8 +337,11 @@ function draw() {
 
     for (let i = 0; i < enemy.length; i++) {
         enemy[i].show(enemyImage);
-
-        Wander(enemy[i]);
+        if (i < 1) {
+            smartAI(enemy[i]);
+        } else {
+            Wander(enemy[i]);
+        }
 
         if (enemy[i].collideOtherCar(player)) {
             restartCurrentLevel();
@@ -473,12 +476,19 @@ function showMap(map) {
                     image(grassImage, col * gridSize - worldPos.x, row * gridSize - worldPos.y, gridSize, gridSize);
                 } else if (map[row][col] == "R") {
                     const roadImage = getImageByNeighbors(map, row, col);
-
                     if (roadImage) {
                         placeImageAtPos(col, row, roadImage);
                     }
                 }
             }
+        }
+    }
+    if (optimalPath) {
+        for (let i = 0; i < optimalPath.length; i++) {
+            noStroke();
+            fill(255, 0, 255);
+            rect(optimalPath[i][0] * gridSize - worldPos.x, optimalPath[i][1] * gridSize - worldPos.y, gridSize, gridSize)
+
         }
     }
 }
@@ -620,7 +630,143 @@ function Wander(ai) {
         }
     }
 }
+var optimalPath = [];
+function smartAI(ai) {
+    var aiPos = ai.pos.copy().mult(1 / gridSize);
+    if (!ai.prevAiPos) {
+        ai.prevAiPos = aiPos.copy();
+        ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false, joy);
+    }
 
+    if (!(abs(aiPos.x - ai.prevAiPos.x) > 1 || abs(aiPos.y - ai.prevAiPos.y) > 1) && ai.aiMovingDirection) {
+        switch (ai.aiMovingDirection) {
+            case "left":
+                ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
+                break;
+            case "right":
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI / 2, false);
+                break;
+            case "top":
+                ai.move(createVector(0, -(2 * gridSize / 100)), 0, false);
+                break;
+            case "bottom":
+                ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
+                break;
+            default:
+                console.log(ai.aiMovingDirection)
+        }
+    } else {
+        optimalPath = solveMaze(selectedMap, ai);
+        if (optimalPath.length < 2) {
+            ai.prevAiPos.x = aiPos.x;
+            ai.prevAiPos.y = aiPos.y;
+            var availableDirections = [];
+
+
+            if (selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x - 1)] === "R") {
+                availableDirections.push("left");
+            }
+
+            if (selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === " " || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "G" || selectedMap[floor(aiPos.y)][floor(aiPos.x + 1)] === "R") {
+                availableDirections.push("right");
+            }
+
+            if (withInBounds(floor(aiPos.y - 1), floor(aiPos.x))) {
+                if (selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y - 1)][floor(aiPos.x)] === "RR") {
+                    availableDirections.push("top");
+                }
+            }
+
+            if (withInBounds(floor(aiPos.y + 1), floor(aiPos.x))) {
+                if (selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === " " || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "G" || selectedMap[floor(aiPos.y + 1)][floor(aiPos.x)] === "R") {
+                    availableDirections.push("bottom");
+                }
+            }
+
+            if (availableDirections.length > 1) {
+                for (let i = 0; i < availableDirections.length; i++) {
+                    switch (ai.aiMovingDirection) {
+                        case "left":
+                            if (availableDirections[i] === "right") {
+                                availableDirections.splice(i, 1);
+                            }
+                            break;
+                        case "right":
+                            if (availableDirections[i] === "left") {
+                                availableDirections.splice(i, 1);
+                            }
+                            break;
+                        case "top":
+                            if (availableDirections[i] === "bottom") {
+                                availableDirections.splice(i, 1);
+                            }
+                            break;
+                        case "bottom":
+                            if (availableDirections[i] === "top") {
+                                availableDirections.splice(i, 1);
+                            }
+                            break;
+                    }
+                }
+            }
+
+            ai.aiMovingDirection = availableDirections[floor(random(availableDirections.length))];
+
+            switch (ai.aiMovingDirection) {
+                case "left":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
+                    break;
+                case "right":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), PI / 2, false);
+                    break;
+                case "top":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), 0, false);
+                    break;
+                case "bottom":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
+                    break;
+                default:
+                    console.log(ai.aiMovingDirection);
+            }
+        } else {
+            ai.prevAiPos.x = aiPos.x;
+            ai.prevAiPos.y = aiPos.y;
+            if (floor(aiPos.x) - optimalPath[1][0] == 0) {
+                if (floor(aiPos.y) - optimalPath[1][1]==1) {
+                    ai.aiMovingDirection = "top";
+                } else if (floor(aiPos.y) - optimalPath[1][1]==-1) {
+                    ai.aiMovingDirection = "bottom";
+                } else {
+                    console.log("Mistake with the Maze Solver")
+                }
+            } else if(floor(aiPos.y) - optimalPath[1][1] == 0) {
+                if (floor(aiPos.x) - optimalPath[1][0]==1) {
+                    ai.aiMovingDirection = "left";
+                 } else if (floor(aiPos.x) - optimalPath[1][0]==-1) {
+                    ai.aiMovingDirection = "right";
+                  } else {
+                    console.log("Mistake with the Maze Solver")
+                }
+            }
+            switch (ai.aiMovingDirection) {
+                case "left":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), -PI / 2, false);
+                    break;
+                case "right":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), PI / 2, false);
+                    break;
+                case "top":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), 0, false);
+                    break;
+                case "bottom":
+                    ai.move(createVector(0, -(2 * gridSize / 100)), PI, false);
+                    break;
+                default:
+                    console.log(ai.aiMovingDirection);
+            }
+        }
+    }
+}
 
 function withInBounds(x, y) {
     if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;

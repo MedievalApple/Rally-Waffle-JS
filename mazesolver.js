@@ -119,6 +119,6 @@ function solveMaze(TheMap, ai) {
   let startCell = [floor(aiPos.x), floor(aiPos.y)];
   let endCell = [floor(playerPos.x), floor(playerPos.y)];
   correctPath = findShortestPath(startCell, endCell, TheMap);
-  console.log(correctPath);
+  return correctPath;
 }
 
