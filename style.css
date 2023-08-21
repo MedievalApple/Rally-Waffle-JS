@@ -25,11 +25,11 @@ h1 {
 }
 
 .miniMap {
-    position: relative;
+    /* position: relative;
     width: 15vw;
     height: 15vw;
     margin-left: 5vw;
-    background-color: rgb(167, 167, 167);
+    background-color: rgb(167, 167, 167); */
     border: 5px solid black;
     font-family: 'Bungee Spice', cursive;
 }

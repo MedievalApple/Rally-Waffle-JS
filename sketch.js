@@ -11,6 +11,7 @@ var corners = [];
 //T = Tile
 //https://www.lookuptables.com/text/extended-ascii-table
 var carImage;
+var cityImage;
 var enemyImage;
 var grassImage;
 var selectedMap;
@@ -226,20 +227,29 @@ function preload() {
         ["W", "W", "W", "W", "W", "W", "L", "L", "L", "L", "W", "W", "W", "W", "W", "W"]
     ];
 
-    specialSkins = {
+    specialCarSkins = {
         "uwu": loadImage("./assets/uwu.png"),
         "ean": loadImage("./assets/nelson.png")
     }
 
-    if (specialSkins[playerName.toLowerCase()]) {
-        carImage = specialSkins[playerName.toLowerCase()];
+    if (specialCarSkins[playerName.toLowerCase()]) {
+        carImage = specialCarSkins[playerName.toLowerCase()];
     } else {
         carImage = loadImage("./assets/player.png");
     }
 
+    specialCityTexture = {
+        "uwu": loadImage("./assets/city.png")
+    }
+
+    if (specialCityTexture[playerName.toLowerCase()]) {
+        cityImage = specialCityTexture[playerName.toLowerCase()];
+    } else {
+        cityImage = loadImage("./assets/cityBW.png");
+    }
+
     enemyImage = loadImage("./assets/enemy.png");
     grassImage = loadImage("./assets/grass.png");
-    cityImage = loadImage("./assets/cityBW.png");
     mapleImage = loadImage("./assets/maple.png");
 
     cachedLoadImage("./assets/road/000001010.png");
@@ -384,7 +394,7 @@ function drawMiniMap() {
 
     let miniMapContext = miniMap.getContext("2d");
 
-    miniMapContext.fillStyle = "rgb(0, 0, 0)";
+    miniMapContext.fillStyle = "rgb(63, 65, 63)";
     miniMapContext.fillRect(0, 0, miniMapWidth, miniMapHeight);
 
     // Calculating the ratio of game board positions to canvas positions
@@ -483,14 +493,13 @@ function showMap(map) {
             }
         }
     }
-    if (optimalPath) {
-        for (let i = 0; i < optimalPath.length; i++) {
-            noStroke();
-            fill(255, 0, 255);
-            rect(optimalPath[i][0] * gridSize - worldPos.x, optimalPath[i][1] * gridSize - worldPos.y, gridSize, gridSize)
-
-        }
-    }
+    // if (optimalPath) {
+    //     for (let i = 0; i < optimalPath.length; i++) {
+    //         noStroke();
+    //         fill(255, 0, 255);
+    //         rect(optimalPath[i][0] * gridSize - worldPos.x, optimalPath[i][1] * gridSize - worldPos.y, gridSize, gridSize)
+    //     }
+    // }
 }
 
 class Syrup {
