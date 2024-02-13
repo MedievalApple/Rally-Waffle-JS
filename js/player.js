@@ -1,3 +1,5 @@
+var corners = [];
+
 class Car {
     constructor() {
         this.pos = createVector(width / 2 - gridSize / 2, height / 2 - gridSize / 2);
