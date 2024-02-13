@@ -7,6 +7,7 @@ var cityImage;
 var enemyImage;
 var grassImage;
 var mapleImage;
+var gameOverImage;
 var selectedMap;
 var selectedRoad;
 var worldPos;
@@ -14,10 +15,17 @@ var stopwatchString;
 var collectedSyrups = 0;
 var currentLevel = 0;
 var levels = [];
-var playerName = localStorage.getItem("username");
 var joy = " ";
 
+var elapsedTime;
+var totalTime = 0;
+
+var playerName = localStorage.getItem("username");
+
 const imageCache = {};
+
+var gameOver = false;
+var gameWon = false;
 
 function cachedLoadImage(path) {
     if (!imageCache[path]) {
@@ -28,7 +36,9 @@ function cachedLoadImage(path) {
 }
 
 function preload() {
-    levels = getMaps()
+    levels = getMaps();
+
+    refreshScores();
 
     specialCarSkins = {
         "uwu": loadImage("./assets/player/uwu.png"),
@@ -48,12 +58,14 @@ function preload() {
     if (specialCityTexture[playerName.toLowerCase()]) {
         cityImage = specialCityTexture[playerName.toLowerCase()];
     } else {
-        cityImage = loadImage("./assets/map/cityBW.png");
+        cityImage = loadImage("./assets/map/citybw.png");
     }
 
     enemyImage = loadImage("./assets/enemy/enemy.png");
     grassImage = loadImage("./assets/map/grass.png");
     mapleImage = loadImage("./assets/items/maple.png");
+
+    gameOverImage = loadImage("./assets/ui/gameover.png")
 
     cachedLoadImage("./assets/road/000001010.png");
     cachedLoadImage("./assets/road/000100010.png");
@@ -99,12 +111,10 @@ function nextLevel() {
     worldPos = createVector(0, 0);
 
     if (currentLevel == levels.length) {
-        alert("you win");
-        currentLevel = -1;
+        //alert("you win");
+        gameWon = true;
         addScore(playerName, stopwatchString);
         clearInterval(stopwatchInterval);
-        startStopwatch();
-        nextLevel();
         return;
     }
 
@@ -133,64 +143,86 @@ function restartCurrentLevel() {
 }
 
 function draw() {
-    background(255);
-    drawMiniMap(selectedMap);
-    showMap(selectedMap);
+    if(!gameOver && !gameWon){
+        background(255);
+        drawMiniMap(selectedMap);
+        showMap(selectedMap);
 
-    player.move(null, null, true, joy);
-    player.show(carImage, true);
+        player.move(null, null, true, joy);
+        player.show(carImage, true);
 
-    for (let i = 0; i < enemy.length; i++) {
-        enemy[i].show(enemyImage);
-        if (i < 1) {
-            smartAI(enemy[i]);
-        } else {
-            wanderAI(enemy[i]);
+        for (let i = 0; i < enemy.length; i++) {
+            enemy[i].show(enemyImage);
+            if (i < 1) {
+                smartAI(enemy[i]);
+            } else {
+                wanderAI(enemy[i]);
+            }
+
+            if (enemy[i].collideOtherCar(player)) {
+                gameOver = true;
+                clearInterval(stopwatchInterval);
+                console.log("collideWithPlayer");
+            }
         }
 
-        if (enemy[i].collideOtherCar(player)) {
-            restartCurrentLevel();
-            console.log("collideWithPlayer");
+        for (let i = 0; i < mapleSyrups.length; i++) {
+            mapleSyrups[i].show();
+
+            if (mapleSyrups[i].collide()) {
+                mapleSyrups.splice(i, 1);
+                player.health = 1;
+                collectedSyrups++;
+            }
         }
-    }
 
-    for (let i = 0; i < mapleSyrups.length; i++) {
-        mapleSyrups[i].show();
-
-        if (mapleSyrups[i].collide()) {
-            mapleSyrups.splice(i, 1);
-            player.health = 1;
-            collectedSyrups++;
+        if (mapleSyrups.length == 0) {
+            nextLevel();
         }
+
+        fill(255, 60, 0);
+        noStroke();
+        rect(width - width / 6, 0, width / 6, width / 40, 5);
+        fill(255);
+        textSize(width / 50);
+        fill(255, 255, 0);
+        text(localStorage.getItem("username"), width - width / 20, width / 50)
+        fill(255, 255, 255);
+        text(stopwatchString, width - width / 6 + width / 30, width / 50);
+        fill(255, 255, 0);
+        text(collectedSyrups, width - width / 6 + width / 100, width / 50);
     }
 
-    if (mapleSyrups.length == 0) {
-        nextLevel();
+    //Gameover Image
+    if(gameOver){
+        image(gameOverImage, 40, -30);
+        textSize(40);
+        fill(255, 179, 0);
+        text("Press R To Try Again", 75, 450)
     }
 
-    fill(255, 60, 0);
-    noStroke();
-    rect(width - width / 6, 0, width / 6, width / 40, 5);
-    fill(255);
-    textSize(width / 50);
-    fill(255, 255, 0);
-    text(localStorage.getItem("username"), width - width / 20, width / 50)
-    fill(255, 255, 255);
-    text(stopwatchString, width - width / 6 + width / 30, width / 50);
-    fill(255, 255, 0);
-    text(collectedSyrups, width - width / 6 + width / 100, width / 50);
+    //Gamewon
+    if(gameWon){
+        fill(255, 179, 0);
+        textSize(80);
+        text("YOU WON!", 60, 250)
+        textSize(40);
+        text("Press R To Play Again", 75, 325)
+    }
+
 }
 
 function withInBounds(x, y) {
     if (x < 0 || x >= 16 || y < 0 || y >= 16) return false;
     return true;
 }
+
 var stopwatchInterval;
 
 function startStopwatch() {
     var startTime = Date.now();
     stopwatchInterval = setInterval(function () {
-        var elapsedTime = Date.now() - startTime;
+        elapsedTime = (Date.now() - startTime) + totalTime;
         var minutes = Math.floor(elapsedTime / (60 * 1000));
         var seconds = Math.floor((elapsedTime % (60 * 1000)) / 1000);
         var milliseconds = Math.floor((elapsedTime % 1000) / 10);

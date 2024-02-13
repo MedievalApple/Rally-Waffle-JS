@@ -1,8 +1,9 @@
-var Counter = 1;
 var listOfScores = [];
-function addScore(playerName, Score) {
-    listOfScores.push({ "name": playerName, "score": Score });
-    sortScores(listOfScores);
+
+function refreshScores() {
+    if(localStorage.getItem("scores") != null){
+        listOfScores = JSON.parse(localStorage.getItem("scores"));
+    }
     var existingScores = document.getElementsByClassName("scoreItem");
     for(let i = existingScores.length-1; i>=0; i--) {
         existingScores[i].remove();
@@ -14,6 +15,14 @@ function addScore(playerName, Score) {
         document.getElementById("score").append(score);
     }
 }
+
+function addScore(playerName, Score) {
+    listOfScores.push({ "name": playerName, "score": Score });
+    localStorage.setItem("scores", JSON.stringify(listOfScores));
+    sortScores(listOfScores);
+    refreshScores();
+}
+
 function sortScores(scores) {
     scores.sort((a, b) => {
         const time1 = a.score.split(":").join('')

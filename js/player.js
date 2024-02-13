@@ -42,8 +42,9 @@ class Car {
             noStroke();
             if (this.health < 0) {
                 this.health = 0;
-                alert("You Failed");
-                restartCurrentLevel();
+                //alert("You Failed");
+                gameOver = true;
+                clearInterval(stopwatchInterval);
             }
             rect(-this.w / 2, -50, this.w * this.health, 8, 10);
         }
