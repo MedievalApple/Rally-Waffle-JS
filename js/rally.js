@@ -228,29 +228,29 @@ function preload() {
     ];
 
     specialCarSkins = {
-        "uwu": loadImage("./assets/uwu.png"),
-        "ean": loadImage("./assets/nelson.png")
+        "uwu": loadImage("./assets/player/uwu.png"),
+        "ean": loadImage("./assets/player/nelson.png")
     }
 
     if (specialCarSkins[playerName.toLowerCase()]) {
         carImage = specialCarSkins[playerName.toLowerCase()];
     } else {
-        carImage = loadImage("./assets/player.png");
+        carImage = loadImage("./assets/player/player.png");
     }
 
     specialCityTexture = {
-        "uwu": loadImage("./assets/city.png")
+        "uwu": loadImage("./assets/map/city.png")
     }
 
     if (specialCityTexture[playerName.toLowerCase()]) {
         cityImage = specialCityTexture[playerName.toLowerCase()];
     } else {
-        cityImage = loadImage("./assets/cityBW.png");
+        cityImage = loadImage("./assets/map/cityBW.png");
     }
 
-    enemyImage = loadImage("./assets/enemy.png");
-    grassImage = loadImage("./assets/grass.png");
-    mapleImage = loadImage("./assets/maple.png");
+    enemyImage = loadImage("./assets/enemy/enemy.png");
+    grassImage = loadImage("./assets/map/grass.png");
+    mapleImage = loadImage("./assets/items/maple.png");
 
     cachedLoadImage("./assets/road/000001010.png");
     cachedLoadImage("./assets/road/000100010.png");
