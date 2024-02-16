@@ -90,6 +90,8 @@ function setup() {
         canvas.id("game");
         gridSize = floor(width / 8);
 
+        document.getElementById("game").removeAttribute("style");
+
         if (navigator.userAgent.toLowerCase().match(/mobile/i)) {
             joy = new JoyStick('joyDiv');
         }
