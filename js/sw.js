@@ -2,8 +2,8 @@ const cacheName = "rally-v2";
 
 const contentToCache = [
     "/index.html",
-    "/about.html",
-    "/rally.html",
+    "/about",
+    "/rally",
     "/js/background.js",
     "/js/controls.js",
     "/js/index.js"
