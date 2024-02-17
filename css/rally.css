@@ -11,6 +11,9 @@ body {
     min-height: 100vh;
     align-items: center;
     background-color: rgb(43, 43, 43);
+    background-image: url('');
+    image-rendering: pixelated;
+    background-size: 10vw;
 }
 
 header {

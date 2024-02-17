@@ -36,9 +36,40 @@
             </svg>
         </a>
         <a style="margin-left: 5%; margin-right: 5;"></a>
-        <a title="About Page" href="/about">
+        <a title="About Page" href="/about" style="text-decoration: none;">
             <img style="image-rendering: pixelated;" height="34px" width="34px" src="/assets/player/player.png">
         </a>
+        
+        <div class="dropdown" title="Change Background">
+            <img src="" id="dropdown-image" width="25px" height="25px">
+            <div class="dropdown-content">
+                <div>
+                    <input title="No Background" type="radio" onclick="bgNone()" id="none" name="bg" value="none"/>
+                    <label for="none">None</label>
+                </div>
+                
+                <div>
+                    <input title="Grass Background" type="radio" onclick="bgGrass()" id="grass" name="bg" value="grass" />
+                    <label for="grass">Grass</label>
+                </div>
+                
+                <div>
+                    <input title="City Background" type="radio" onclick="bgCity()" id="city" name="bg" value="city" />
+                    <label for="city">City</label>
+                </div>
+    
+                <div>
+                    <input title="Rainbow Background" type="radio" onclick="bgRainbow()" id="rainbow" name="bg" value="rainbow" />
+                    <label for="rainbow">Rainbow</label>
+                </div>
+
+                <div>
+                    <input title="Apply To All Backgrounds" type="checkbox" id="bgCheck" onclick="bgDisable()"/>
+                    <label for="checkbox">Apply Everywhere</label>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script src="js/index.js"></script>

@@ -12,6 +12,9 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: rgb(43, 43, 43);
+    background-image: url('');
+    image-rendering: pixelated;
+    background-size: 10vw;
 }
 
 header {
@@ -24,6 +27,7 @@ header {
 .info {
     border: 2px solid rgba(255, 255, 255, .2);
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    background-color: rgb(43, 43, 43);
     /* text-shadow: rgb(0, 0, 0) 1px 0 3px; */
     text-align: center;
     border-radius: 10px;
