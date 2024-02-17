@@ -1,4 +1,4 @@
-const cacheName = "rally-v4";
+const cacheName = "rally-v5";
 
 const contentToCache = [
     "/index.html",
@@ -47,7 +47,7 @@ const contentToCache = [
     "/assets/road/010001010.png",
     "/assets/road/010100000.png",
     "/assets/road/010100010.png",
-    "/assets/road/000001000.png",
+    "/assets/road/010101000.png",
     "/assets/road/010101010.png",
 
     "/assets/ui/gameover.png",
