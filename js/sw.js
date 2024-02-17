@@ -1,4 +1,4 @@
-const cacheName = "rally-v2";
+const cacheName = "rally-v3";
 
 const contentToCache = [
     "/index.html",
