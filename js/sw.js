@@ -5,6 +5,7 @@ const contentToCache = [
     "/about.html"
 ];
 
+//Installation
 self.addEventListener("install", (e) => {
     console.log("[Service Worker] Install");
     e.waitUntil(
@@ -16,6 +17,7 @@ self.addEventListener("install", (e) => {
       );
   });
 
+  //Responding to fetches (Getting Cached Data)
   self.addEventListener("fetch", (e) => {
     e.respondWith(
       (async () => {
@@ -32,4 +34,21 @@ self.addEventListener("install", (e) => {
       })(),
     );
   });
+
+  //Clear Old Cache
+  self.addEventListener("activate", (e) => {
+    e.waitUntil(
+      caches.keys().then((keyList) => {
+        return Promise.all(
+          keyList.map((key) => {
+            if (key === cacheName) {
+              return;
+            }
+            return caches.delete(key);
+          }),
+        );
+      }),
+    );
+  });
+  
   
