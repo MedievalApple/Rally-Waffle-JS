@@ -1,4 +1,4 @@
-const cacheName = "rally-v3";
+const cacheName = "rally-v4";
 
 const contentToCache = [
     "/index.html",
@@ -52,7 +52,9 @@ const contentToCache = [
 
     "/assets/ui/gameover.png",
 
-    "/assets/favicon.ico"
+    "/assets/favicon.ico",
+
+    "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"
 ];
 
 //Installation
