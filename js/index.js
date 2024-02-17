@@ -34,6 +34,10 @@ window.addEventListener("load", (event) => {
     if(localStorage.getItem("sync") == 1){
         document.getElementById("bgCheck").checked = true;
     }
+
+    if(localStorage.getItem("uploadScores") == "true"){
+        document.getElementById("uploadCheck").checked = true;
+    }
 });
 
 function bgNone(){
