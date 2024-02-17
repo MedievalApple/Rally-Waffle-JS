@@ -47,5 +47,6 @@
   "start_url": "index.html",
   "display": "fullscreen",
   "theme_color": "#f1a300",
-  "background_color": "#2b2b2b"
+  "background_color": "#2b2b2b",
+  "orientation": "landscape"
 }
