@@ -54,7 +54,12 @@ const contentToCache = [
 
     "/assets/favicon.ico",
 
-    "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"
+    "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js",
+
+    "https://github.com/MedievalApple.png",
+    "https://github.com/NateDCoder.png",
+    "https://github.com/3xjn.png",
+    "https://github.com/1Sky347.png"
 ];
 
 //Installation
