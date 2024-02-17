@@ -1,3 +1,7 @@
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/js/sw.js");
+}
+  
 function startGame() {
     const username = document.getElementById("nameInput").value;
     

@@ -1,0 +1,17 @@
+{
+    "name": "Rally Waffle JS",
+    "short_name": "Rally Waffle",
+    "description": "Rally-X Styled Maze Game In JS With Waffles.",
+    "icons": [
+      {
+        "src": "assets/player/player.png",
+        "sizes": "32x32",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "theme_color": "#f1a300",
+    "background_color": "#2b2b2b"
+  }
+  
