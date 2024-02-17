@@ -37,7 +37,7 @@ window.addEventListener("load", (event) => {
 });
 
 function bgNone(){
-    document.getElementById("dropdown-image").src = "";
+    document.getElementById("dropdown-image").src = "/assets/map/gray.png";
     var body = document.getElementsByTagName('body')[0];
     body.style.backgroundImage = 'url(\'\')';
     localStorage.setItem("bg", 0);
