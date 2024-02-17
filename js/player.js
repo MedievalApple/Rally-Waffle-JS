@@ -12,7 +12,6 @@ class Car {
         //This is for enemies
         this.aiMovingDirection;
         this.prevAiPos;
-        this.pointOfCollision;
     }
     show(theImage, UI) {
         push();
@@ -93,25 +92,24 @@ class Car {
 
                 if (keyIsDown(65) || keyIsDown(37)) { // a & left key
                     this.carAngle -= PI / 80;
-                    if (this.collide()) {
-                        this.carAngle += PI / 80;
-                        this.simulateImpulse(this.pointOfCollision);
+                    let collisionData = this.collide();
+                    if (collisionData) {
+                        this.simulateImpulse(collisionData.x, collisionData.y);
                     }
                 }
                 if (keyIsDown(68) || keyIsDown(39)) { // d & right key
                     this.carAngle += PI / 80;
-                    if (this.collide()) {
-                        this.carAngle -= PI / 80;
-                        this.simulateImpulse(this.pointOfCollision);
+                    let collisionData = this.collide();
+                    if (collisionData) {
+                        this.simulateImpulse(collisionData.x, collisionData.y);
                     }
                 }
             }
 
             this.pos.add(this.vel.rotate(this.carAngle));
-
-            if (this.collide()) {
-                this.pos.sub(this.vel);
-                this.simulateImpulse(this.pointOfCollision);
+            let collisionData = this.collide();
+            if (collisionData) {
+                this.simulateImpulse(collisionData.x, collisionData.y);
             }
 
             if (keyIsDown(88)) { // x key
@@ -147,8 +145,6 @@ class Car {
         return false;
     }
     collide() {
-        this.pointOfCollision = this.findCollisionPoint();
-
         corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
         corners[0].add(this.pos);
         corners[0].mult(1 / gridSize);
@@ -167,154 +163,66 @@ class Car {
 
         if (withInBounds(floor(corners[0].y), floor(corners[0].x))) {
             if (selectedMap[floor(corners[0].y)][floor(corners[0].x)] == "W") {
-                let v1 = (corners[1].copy().sub(corners[0])).mult(gridSize);
-                let angle1 = atan(v1.y / v1.x);
-                let v2 = (corners[2].copy().sub(corners[0])).mult(gridSize);
-                let angle2 = atan(v2.y / v2.x);
-                // if (angle2 < 0) {
-                //     angle2 += PI;
-                // }
-                // if (angle1 < angle2) {
-                //     this.carAngle += PI / 120;
-                // } else {
-                //     this.carAngle -= PI / 120;
-                // }
-                return true;
+                return createVector(floor(corners[0].y), floor(corners[0].x));;
             }
         }
 
         if (withInBounds(floor(corners[1].y), floor(corners[1].x))) {
             if (selectedMap[floor(corners[1].y)][floor(corners[1].x)] == "W") {
-                let v1 = (corners[0].copy().sub(corners[1])).mult(gridSize);
-                let v2 = (corners[3].copy().sub(corners[1])).mult(gridSize);
-                let angle1 = atan(v1.y / v1.x);
-                let angle2 = atan(v2.y / v2.x);
-                // if (angle2 < 0) {
-                //     angle2 += PI;
-                // }
-                // if (angle1 < angle2) {
-                //     this.carAngle -= PI / 120;
-                // } else {
-                //     this.carAngle += PI / 120;
-                // }
-                return true;
+                return createVector(floor(corners[1].y), floor(corners[1].x));;
             }
         }
 
         if (withInBounds(floor(corners[2].y), floor(corners[2].x))) {
             if (selectedMap[floor(corners[2].y)][floor(corners[2].x)] == "W") {
-                let v1 = (corners[0].copy().sub(corners[2])).mult(gridSize);
-                let v2 = (corners[3].copy().sub(corners[2])).mult(gridSize);
-                let angle1 = atan(v1.y / v1.x);
-                let angle2 = atan(v2.y / v2.x);
-                // if (angle2 < 0) {
-                //     angle2 += PI;
-                // }
-                // if (angle1 < angle2) {
-                //     this.carAngle += PI / 120;
-                // } else {
-                //     this.carAngle -= PI / 120;
-                // }
-                return true;
+                return createVector(floor(corners[2].y), floor(corners[2].x));
             }
         }
-        
+
         if (withInBounds(floor(corners[3].y), floor(corners[3].x))) {
             if (selectedMap[floor(corners[3].y)][floor(corners[3].x)] == "W") {
-                let v1 = (corners[1].copy().sub(corners[3])).mult(gridSize);
-                let v2 = (corners[2].copy().sub(corners[3])).mult(gridSize);
-                let angle1 = atan(v1.y / v1.x);
-                let angle2 = atan(v2.y / v2.x);
-                // if (angle2 < 0) {
-                //     angle2 += PI;
-                // }
-                // if (angle1 < 0) {
-                //     angle1 += PI;
-                // }
-                // if (angle1 < angle2) {
-                //     this.carAngle -= PI / 120;
-                // } else {
-                //     this.carAngle += PI / 120;
-                // }
-                return true;
+                return createVector(floor(corners[3].y), floor(corners[3].x));
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return true;
+            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) {
+                return createVector(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)));
+            }
             if (selectedMap[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
-                return true;
+                return createVector(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)));
             }
         }
         for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return true;
+            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) {
+                return createVector(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)));
+            };
             if (selectedMap[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
-                return true;
+                return createVector(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)));
             }
         }
         return false;
     }
 
-    findCollisionPoint() {
-        corners[0] = createVector(-this.w / 2, -this.h / 2).rotate(this.carAngle);
-        corners[0].add(this.pos);
-        corners[0].mult(1 / gridSize);
-
-        corners[1] = createVector(this.w / 2, -this.h / 2).rotate(this.carAngle);
-        corners[1].add(this.pos);
-        corners[1].mult(1 / gridSize);
-
-        corners[2] = createVector(-this.w / 2, this.h / 2).rotate(this.carAngle);
-        corners[2].add(this.pos);
-        corners[2].mult(1 / gridSize);
-
-        corners[3] = createVector(this.w / 2, this.h / 2).rotate(this.carAngle);
-        corners[3].add(this.pos);
-        corners[3].mult(1 / gridSize);
-        for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[0].y, corners[1].y, t)), floor(lerp(corners[0].x, corners[1].x, t)))) return createVector(lerp(corners[0].x, corners[1].x, t), lerp(corners[0].y, corners[1].y, t));;
-            if (selectedMap[floor(lerp(corners[0].y, corners[1].y, t))][floor(lerp(corners[0].x, corners[1].x, t))] == "W") {
-                return createVector(lerp(corners[0].x, corners[1].x, t), lerp(corners[0].y, corners[1].y, t));
-            }
-        }
-        for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[2].y, corners[3].y, t)), floor(lerp(corners[2].x, corners[3].x, t)))) return createVector(lerp(corners[2].x, corners[3].x, t), lerp(corners[2].y, corners[3].y, t));
-            if (selectedMap[floor(lerp(corners[2].y, corners[3].y, t))][floor(lerp(corners[2].x, corners[3].x, t))] == "W") {
-                return createVector(lerp(corners[2].x, corners[3].x, t), lerp(corners[2].y, corners[3].y, t));
-            }
-        }
-        for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[1].y, corners[3].y, t)), floor(lerp(corners[1].x, corners[3].x, t)))) return createVector(lerp(corners[1].x, corners[3].x, t), lerp(corners[1].y, corners[3].y, t));
-            if (selectedMap[floor(lerp(corners[1].y, corners[3].y, t))][floor(lerp(corners[1].x, corners[3].x, t))] == "W") {
-                return createVector(lerp(corners[1].x, corners[3].x, t), lerp(corners[1].y, corners[3].y, t));
-            }
-        }
-        for (let t = 0; t < 1; t += 0.1) {
-            if (!withInBounds(floor(lerp(corners[2].y, corners[0].y, t)), floor(lerp(corners[2].x, corners[0].x, t)))) return createVector(lerp(corners[2].x, corners[0].x, t), lerp(corners[2].y, corners[0].y, t));
-            if (selectedMap[floor(lerp(corners[2].y, corners[0].y, t))][floor(lerp(corners[2].x, corners[0].x, t))] == "W") {
-                return createVector(lerp(corners[2].x, corners[0].x, t), lerp(corners[2].y, corners[0].y, t));
-            }
-        }
-    }
-
-    simulateImpulse(point) {
+    simulateImpulse(row, col) {
         this.carAngle %= 2 * PI;
-        let delta = point.copy().sub(this.pos).rotate(this.carAngle);
-        let collisionAngle = atan2(delta.x, delta.y);
-        // this.collisionAngle %= PI;
-        let angleDiff = collisionAngle - this.carAngle;
-        let newCarVel = this.vel.copy().mult(cos(angleDiff));
-        let deltaAngle = sin(angleDiff);
-        if (abs(deltaAngle) > PI / 8) {
-            this.pos.add(newCarVel);
-            if (this.collide()) {
-                this.pos.sub(newCarVel);
+        if (this.carAngle < 0) {
+            this.carAngle = 2 * PI - this.carAngle;
+        }
+        let targetAngle = int(this.carAngle / (PI / 2) + 0.5);
+        this.carAngle -= Math.sign(this.carAngle - targetAngle) * 0.05;
+        if (!withInBounds(row, col)) {
+            if (abs((row * gridSize + gridSize / 2) - this.pos.x) > abs((col * gridSize + gridSize / 2) - this.pos.y)) {
+                this.pos.y -= Math.sign((row * gridSize + gridSize / 2) - this.pos.x) * 3
+            } else {
+                this.pos.x -= Math.sign((col * gridSize + gridSize / 2) - this.pos.y) * 3
+            }
+        } else {
+            if (abs(this.pos.y - (row * gridSize + gridSize / 2)) > abs(this.pos.x - (col * gridSize + gridSize / 2))) {
+                this.pos.y += Math.sign(this.pos.y - (row * gridSize + gridSize / 2)) * 3
+            } else {
+                this.pos.x += Math.sign(this.pos.x - (col * gridSize + gridSize / 2)) * 3
             }
         }
-        this.carAngle -= deltaAngle * 0.1;
-        if (this.collide()) {
-            this.carAngle += deltaAngle * 0.1;
-        }
-        //console.log(deltaAngle);
     }
 
 }
