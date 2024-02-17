@@ -4,9 +4,55 @@ const contentToCache = [
     "/index.html",
     "/about",
     "/rally",
+
+    "/css/about.css",
+    "/css/index.css",
+    "/css/rally.css",
+
     "/js/background.js",
     "/js/controls.js",
-    "/js/index.js"
+    "/js/enemys.js",
+    "/js/index.js",
+    "/js/items.js",
+    "/js/mapmanger.js",
+    "/js/maps.js",
+    "/js/mazesolver.js",
+    "/js/minimap.js",
+    "/js/player.js",
+    "/js/rally.js",
+    "/js/scoreboard.js",
+    "/js/libs/joy.js",
+    "/js/libs/utils.js",
+
+    "/assets/enemy/enemy.png",
+    "/assets/items/maple.png",
+    "/assets/map/city.png",
+    "/assets/map/citybw.png",
+    "/assets/map/grass.png",
+    "/assets/map/gray.png",
+    "/assets/player/nelson.png",
+    "/assets/player/player.png",
+    "/assets/player/uwu.png",
+
+    "/assets/road/000000010.png",
+    "/assets/road/000001000.png",
+    "/assets/road/000001010.png",
+    "/assets/road/000100000.png",
+    "/assets/road/000100010.png",
+    "/assets/road/000101000.png",
+    "/assets/road/000101010.png",
+    "/assets/road/010000000.png",
+    "/assets/road/010000010.png",
+    "/assets/road/010001000.png",
+    "/assets/road/010001010.png",
+    "/assets/road/010100000.png",
+    "/assets/road/010100010.png",
+    "/assets/road/000001000.png",
+    "/assets/road/010101010.png",
+
+    "/assets/ui/gameover.png",
+
+    "/assets/favicon.ico"
 ];
 
 //Installation
