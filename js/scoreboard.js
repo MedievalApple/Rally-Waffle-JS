@@ -27,7 +27,10 @@ async function refreshScores() {
 
 async function addScore(playerName, Score) {
     if(localStorage.getItem("uploadScores") != null && localStorage.getItem("uploadScores") == "true"){
-        localScores = JSON.parse(localStorage.getItem("scores"));
+        localScores = [];
+        if(localStorage.getItem("scores") != null){
+            localScores = JSON.parse(localStorage.getItem("scores"));   
+        }
         localScores.push({ "name": playerName, "score": Score });
         localStorage.setItem("scores", JSON.stringify(localScores));
         await postData("https://rallywaffle.medievalapple.workers.dev/", [{ "name": playerName, "score": Score }]);
